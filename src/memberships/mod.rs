@@ -2,13 +2,6 @@ use std::{
     ops::{Add, Div, Index, Mul, Neg, Sub},
     usize,
 };
-// #[derive(Debug)]
-// enum MembershipsKind{
-//     Custom,
-//     Triangle,
-//     Trapezoid,
-//     Gaussian,
-// }
 
 #[derive(Debug)]
 pub struct Universe<const N: usize> {
@@ -25,7 +18,7 @@ impl<const N: usize> Index<usize> for Universe<N> {
 #[allow(unused)]
 impl<const N: usize> Universe<N> {
     pub fn new(start: f64, end: f64) -> Self {
-        let mut data = [0.0; N];
+        let mut data: [f64; N] = [0.0; N];
         let dt: f64 = (end - start) / (N as f64);
         for i in 0..N {
             data[i] = start + (i as f64) * dt;
@@ -65,8 +58,8 @@ impl<'a, const N: usize> Add for MemberShip<'a, N> {
             "Universes must be the same"
         );
         let mut mu: [f64; N] = [0.0; N];
-        let mut max = -f64::INFINITY;
-        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+        let mut max: f64 = -f64::INFINITY;
+        let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
 
         for (i, x) in self.universe.into_iter().enumerate() {
             for (i1, x1) in self.universe.into_iter().enumerate() {
@@ -91,7 +84,7 @@ impl<'a, const N: usize> Add for MemberShip<'a, N> {
 impl<'a, const N: usize> Neg for MemberShip<'a, N> {
     type Output = Self;
     fn neg(self) -> Self::Output {
-        let mut mu = [0.0; N];
+        let mut mu: [f64; N] = [0.0; N];
         for i in 0..N {
             mu[i] = -self.mu[i];
         }
@@ -107,8 +100,8 @@ impl<'a, const N: usize> Sub for MemberShip<'a, N> {
             "Universes must be the same"
         );
         let mut mu: [f64; N] = [0.0; N];
-        let mut max = -f64::INFINITY;
-        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+        let mut max: f64 = -f64::INFINITY;
+        let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
 
         for (i, x) in self.universe.into_iter().enumerate() {
             for (i1, x1) in self.universe.into_iter().enumerate() {
@@ -138,8 +131,8 @@ impl<'a, const N: usize> Mul for MemberShip<'a, N> {
             "Universes must be the same"
         );
         let mut mu: [f64; N] = [0.0; N];
-        let mut max = -f64::INFINITY;
-        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+        let mut max: f64 = -f64::INFINITY;
+        let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
 
         for (i, x) in self.universe.into_iter().enumerate() {
             for (i1, x1) in self.universe.into_iter().enumerate() {
@@ -169,8 +162,8 @@ impl<'a, const N: usize> Div for MemberShip<'a, N> {
             "Universes must be the same"
         );
         let mut mu: [f64; N] = [0.0; N];
-        let mut max = -f64::INFINITY;
-        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+        let mut max: f64 = -f64::INFINITY;
+        let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
 
         for (i, x) in self.universe.into_iter().enumerate() {
             for (i1, x1) in self.universe.into_iter().enumerate() {
@@ -201,7 +194,7 @@ impl<'a, const N: usize> MemberShip<'a, N> {
         assert!(b < c, "b must be less that c");
         let mut mu: [f64; N] = [0.0; N];
         for (i, x) in universe.into_iter().enumerate() {
-            let data;
+            let data: f64;
             if *x <= a {
                 data = 0.0;
             } else if *x <= b {
@@ -241,7 +234,7 @@ impl<'a, const N: usize> MemberShip<'a, N> {
 
     pub fn new_linearz(universe: &'a Universe<N>, a: f64, b: f64) -> Self {
         assert!(a < b);
-        let mut mu = [0.0; N];
+        let mut mu: [f64; N] = [0.0; N];
         let mut data: f64;
         for (i, x) in universe.into_iter().enumerate() {
             if *x < a {
@@ -258,7 +251,7 @@ impl<'a, const N: usize> MemberShip<'a, N> {
 
     pub fn new_linears(universe: &'a Universe<N>, a: f64, b: f64) -> Self {
         assert!(a < b);
-        let mut mu = [0.0; N];
+        let mut mu: [f64; N] = [0.0; N];
         let mut data: f64;
         for (i, x) in universe.into_iter().enumerate() {
             if *x < a {
@@ -274,7 +267,7 @@ impl<'a, const N: usize> MemberShip<'a, N> {
     }
 
     pub fn new_step_down(universe: &'a Universe<N>, a: f64) -> Self {
-        let mut mu = [0.0; N];
+        let mut mu: [f64; N] = [0.0; N];
         for (i, x) in universe.into_iter().enumerate() {
             let mut data: f64 = 1.0;
             if *x > a {
@@ -286,7 +279,7 @@ impl<'a, const N: usize> MemberShip<'a, N> {
     }
 
     pub fn new_step_up(universe: &'a Universe<N>, a: f64) -> Self {
-        let mut mu = [0.0; N];
+        let mut mu: [f64; N] = [0.0; N];
         for (i, x) in universe.into_iter().enumerate() {
             let mut data: f64 = 0.0;
             if *x > a {
