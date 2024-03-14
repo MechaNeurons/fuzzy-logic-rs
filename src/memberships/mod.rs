@@ -1,5 +1,7 @@
-use std::{ops::Add, usize};
-
+use std::{
+    ops::{Add, Div, Index, Mul, Neg, Sub},
+    usize,
+};
 // #[derive(Debug)]
 // enum MembershipsKind{
 //     Custom,
@@ -11,6 +13,13 @@ use std::{ops::Add, usize};
 #[derive(Debug)]
 pub struct Universe<const N: usize> {
     pub data: [f64; N],
+}
+
+impl<const N: usize> Index<usize> for Universe<N> {
+    type Output = f64;
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.data[index]
+    }
 }
 
 #[allow(unused)]
@@ -57,11 +66,116 @@ impl<'a, const N: usize> Add for MemberShip<'a, N> {
         );
         let mut mu: [f64; N] = [0.0; N];
         let mut max = -f64::INFINITY;
+        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
 
         for (i, x) in self.universe.into_iter().enumerate() {
             for (i1, x1) in self.universe.into_iter().enumerate() {
                 for (i2, x2) in rhs.universe.into_iter().enumerate() {
-                    if *x - *x1 - *x2 < 1e-8 {
+                    if f64::abs(*x - *x1 - *x2) < epsilon {
+                        mu[i] += self.mu[i1] * rhs.mu[i2];
+                    }
+                }
+            }
+            if mu[i] > max {
+                max = mu[i];
+            }
+        }
+        for j in 0..N {
+            mu[j] /= max;
+        }
+
+        MemberShip::new(self.universe, mu)
+    }
+}
+
+impl<'a, const N: usize> Neg for MemberShip<'a, N> {
+    type Output = Self;
+    fn neg(self) -> Self::Output {
+        let mut mu = [0.0; N];
+        for i in 0..N {
+            mu[i] = -self.mu[i];
+        }
+        MemberShip::new(self.universe, mu)
+    }
+}
+
+impl<'a, const N: usize> Sub for MemberShip<'a, N> {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        assert_eq!(
+            self.universe as *const _, rhs.universe as *const _,
+            "Universes must be the same"
+        );
+        let mut mu: [f64; N] = [0.0; N];
+        let mut max = -f64::INFINITY;
+        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+
+        for (i, x) in self.universe.into_iter().enumerate() {
+            for (i1, x1) in self.universe.into_iter().enumerate() {
+                for (i2, x2) in rhs.universe.into_iter().enumerate() {
+                    if f64::abs(*x - *x1 + *x2) < epsilon {
+                        mu[i] += self.mu[i1] * rhs.mu[i2];
+                    }
+                }
+            }
+            if mu[i] > max {
+                max = mu[i];
+            }
+        }
+        for j in 0..N {
+            mu[j] /= max;
+        }
+
+        MemberShip::new(self.universe, mu)
+    }
+}
+
+impl<'a, const N: usize> Mul for MemberShip<'a, N> {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        assert_eq!(
+            self.universe as *const _, rhs.universe as *const _,
+            "Universes must be the same"
+        );
+        let mut mu: [f64; N] = [0.0; N];
+        let mut max = -f64::INFINITY;
+        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+
+        for (i, x) in self.universe.into_iter().enumerate() {
+            for (i1, x1) in self.universe.into_iter().enumerate() {
+                for (i2, x2) in rhs.universe.into_iter().enumerate() {
+                    if f64::abs(*x - *x1 * *x2) < epsilon {
+                        mu[i] += self.mu[i1] * rhs.mu[i2];
+                    }
+                }
+            }
+            if mu[i] > max {
+                max = mu[i];
+            }
+        }
+        for j in 0..N {
+            mu[j] /= max;
+        }
+
+        MemberShip::new(self.universe, mu)
+    }
+}
+
+impl<'a, const N: usize> Div for MemberShip<'a, N> {
+    type Output = Self;
+    fn div(self, rhs: Self) -> Self::Output {
+        assert_eq!(
+            self.universe as *const _, rhs.universe as *const _,
+            "Universes must be the same"
+        );
+        let mut mu: [f64; N] = [0.0; N];
+        let mut max = -f64::INFINITY;
+        let epsilon = 0.05 * (self.universe[1] - self.universe[0]);
+
+        for (i, x) in self.universe.into_iter().enumerate() {
+            for (i1, x1) in self.universe.into_iter().enumerate() {
+                for (i2, x2) in rhs.universe.into_iter().enumerate() {
+                    if f64::abs(*x - *x1 / *x2) < epsilon {
                         mu[i] += self.mu[i1] * rhs.mu[i2];
                     }
                 }
