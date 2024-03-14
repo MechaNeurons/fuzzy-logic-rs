@@ -1,3 +1,13 @@
+use std::{ops::Add, usize};
+
+// #[derive(Debug)]
+// enum MembershipsKind{
+//     Custom,
+//     Triangle,
+//     Trapezoid,
+//     Gaussian,
+// }
+
 #[derive(Debug)]
 pub struct Universe<const N: usize> {
     pub data: [f64; N],
@@ -7,8 +17,7 @@ pub struct Universe<const N: usize> {
 impl<const N: usize> Universe<N> {
     pub fn new(start: f64, end: f64) -> Self {
         let mut data = [0.0; N];
-        let n = N as f64;
-        let dt: f64 = (end - start) / n;
+        let dt: f64 = (end - start) / (N as f64);
         for i in 0..N {
             data[i] = start + (i as f64) * dt;
         }
@@ -32,40 +41,100 @@ impl<'a, const N: usize> IntoIterator for &'a Universe<N> {
     }
 }
 
-/*
-    Triangular membership function
-    please note that a < b < c.
-*/
-
 #[derive(Debug)]
-pub struct Triangle<const N: usize> {
-    // universe: &'a Universe<N>,
+pub struct MemberShip<'a, const N: usize> {
+    universe: &'a Universe<N>,
     mu: [f64; N],
+    // kind: MembershipsKind,
 }
 
-impl<const N: usize> Triangle<N> {
-    pub fn new(universe: &Universe<N>, a: f64, b: f64, c: f64) -> Self {
-        assert!(a < b);
-        assert!(b < c);
+impl<'a, const N: usize> Add for MemberShip<'a, N> {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        assert_eq!(
+            self.universe as *const _, rhs.universe as *const _,
+            "Universes must be the same"
+        );
         let mut mu: [f64; N] = [0.0; N];
-        for (i, value) in universe.into_iter().enumerate() {
-            let x = value.clone();
+        let mut max = -f64::INFINITY;
+
+        for (i, x) in self.universe.into_iter().enumerate() {
+            for (i1, x1) in self.universe.into_iter().enumerate() {
+                for (i2, x2) in rhs.universe.into_iter().enumerate() {
+                    if *x - *x1 - *x2 < 1e-8 {
+                        mu[i] += self.mu[i1] * rhs.mu[i2];
+                    }
+                }
+            }
+            if mu[i] > max {
+                max = mu[i];
+            }
+        }
+        for j in 0..N {
+            mu[j] /= max;
+        }
+
+        MemberShip::new(self.universe, mu)
+    }
+}
+
+impl<'a, const N: usize> MemberShip<'a, N> {
+    pub fn new(universe: &'a Universe<N>, mu: [f64; N]) -> Self {
+        Self { universe, mu }
+    }
+    pub fn new_triangle(universe: &'a Universe<N>, a: f64, b: f64, c: f64) -> Self {
+        assert!(a < b, "a must be less than b");
+        assert!(b < c, "b must be less that c");
+        let mut mu: [f64; N] = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
             let data;
-            if x <= a {
+            if *x <= a {
                 data = 0.0;
-            } else if x <= b {
-                data = (x - a) / (b - a);
-            } else if x <= c {
-                data = (c - x) / (c - b);
+            } else if *x <= b {
+                data = (*x - a) / (b - a);
+            } else if *x <= c {
+                data = (c - *x) / (c - b);
             } else {
                 data = 0.0;
             }
             mu[i] = data;
         }
-        Self { mu }
+        Self { universe, mu }
+    }
+    pub fn new_trapezoid(universe: &'a Universe<N>, a: f64, b: f64, c: f64, d: f64) -> Self {
+        // assert!(universe[0]<a);
+        assert!(a < b, "a must be less than b");
+        assert!(b < c, "b must be less than c");
+        assert!(c < d, "c must be less than d");
+        let mut mu: [f64; N] = [0.0; N];
+        let mut data: f64;
+        for (i, value) in universe.into_iter().enumerate() {
+            if *value <= a {
+                data = 0.0;
+            } else if *value <= b {
+                data = (*value - a) / (b - a);
+            } else if *value <= c {
+                data = 1.0;
+            } else if *value <= d {
+                data = (d - *value) / (d - c);
+            } else {
+                data = 0.0;
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+    pub fn new_gaussian(universe: &'a Universe<N>, mean: f64, variance: f64) -> Self {
+        let mut mu: [f64; N] = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
+            let data: f64 = f64::exp(-0.5 * f64::powi((*x - mean) / variance, 2));
+            mu[i] = data;
+        }
+        Self { universe, mu }
     }
 }
-impl<const N: usize> IntoIterator for Triangle<N> {
+
+impl<'a, const N: usize> IntoIterator for MemberShip<'a, N> {
     type Item = f64;
     type IntoIter = std::array::IntoIter<f64, N>;
     fn into_iter(self) -> Self::IntoIter {
