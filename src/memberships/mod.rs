@@ -238,10 +238,101 @@ impl<'a, const N: usize> MemberShip<'a, N> {
         }
         Self { universe, mu }
     }
+
+    pub fn new_linearz(universe: &'a Universe<N>, a: f64, b: f64) -> Self {
+        assert!(a < b);
+        let mut mu = [0.0; N];
+        let mut data: f64;
+        for (i, x) in universe.into_iter().enumerate() {
+            if *x < a {
+                data = 1.0;
+            } else if *x < b {
+                data = (a - *x) / (a - b);
+            } else {
+                data = 0.0;
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
+    pub fn new_linears(universe: &'a Universe<N>, a: f64, b: f64) -> Self {
+        assert!(a < b);
+        let mut mu = [0.0; N];
+        let mut data: f64;
+        for (i, x) in universe.into_iter().enumerate() {
+            if *x < a {
+                data = 0.0;
+            } else if *x < b {
+                data = (*x - a) / (b - a);
+            } else {
+                data = 1.0;
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
+    pub fn new_step_down(universe: &'a Universe<N>, a: f64) -> Self {
+        let mut mu = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
+            let mut data: f64 = 1.0;
+            if *x > a {
+                data = 0.0;
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
+    pub fn new_step_up(universe: &'a Universe<N>, a: f64) -> Self {
+        let mut mu = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
+            let mut data: f64 = 0.0;
+            if *x > a {
+                data = 1.0;
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
     pub fn new_gaussian(universe: &'a Universe<N>, mean: f64, variance: f64) -> Self {
         let mut mu: [f64; N] = [0.0; N];
         for (i, x) in universe.into_iter().enumerate() {
             let data: f64 = f64::exp(-0.5 * f64::powi((*x - mean) / variance, 2));
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
+    pub fn new_double_gaussian(
+        universe: &'a Universe<N>,
+        mean1: f64,
+        variance1: f64,
+        mean2: f64,
+        variance2: f64,
+    ) -> Self {
+        assert!(mean1 <= mean2, "mean1 must be less than mean2");
+        let mut mu: [f64; N] = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
+            let data: f64;
+            if *x < mean1 {
+                data = f64::exp(-0.5 * f64::powi((*x - mean1) / variance1, 2));
+            } else if *x < mean2 {
+                data = 1.0;
+            } else {
+                data = f64::exp(-0.5 * f64::powi((*x - mean2) / variance2, 2));
+            }
+            mu[i] = data;
+        }
+        Self { universe, mu }
+    }
+
+    pub fn new_bell(universe: &'a Universe<N>, width: f64, shape: f64, center: f64) -> Self {
+        let mut mu: [f64; N] = [0.0; N];
+        for (i, x) in universe.into_iter().enumerate() {
+            let data = 1.0 / (1.0 + f64::powf(f64::abs((*x - center) / width), 2.0 * shape));
             mu[i] = data;
         }
         Self { universe, mu }
