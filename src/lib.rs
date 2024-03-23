@@ -3,14 +3,14 @@
 //#[allow(unused)]
 //use memberships::{MemberShip, Universe};
 
-pub mod memberships {
+pub mod membership_functions {
 
     pub trait GetDegree {
         fn get_degree(&self, x: f64) -> f64;
     }
 
     #[allow(dead_code)]
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub enum Kind {
         Triangle(Triangle),
         Trapezoid(Trapezoid),
@@ -21,17 +21,40 @@ pub mod memberships {
         Gaussian(Gaussian),
         DoubleGaussian,
         Bell,
-        Normal,
+        Normal(Gaussian),
+        Custom(Custom),
     }
 
-    #[allow(dead_code)]
-    #[derive(Debug)]
+    impl GetDegree for Kind {
+        fn get_degree(&self, x: f64) -> f64 {
+            match self {
+                Self::Triangle(mf) => mf.get_degree(x),
+                Self::Gaussian(mf) => mf.get_degree(x),
+                Self::Custom(mf) => mf.get_degree(x),
+                _ => 0.0,
+            }
+        }
+    }
+
+    #[derive(Debug, Clone)]
     pub struct MembershipFunction {
         pub name: String,
         pub kind: Kind,
     }
 
-    #[derive(Debug)]
+    impl GetDegree for MembershipFunction {
+        fn get_degree(&self, x: f64) -> f64 {
+            self.kind.get_degree(x)
+        }
+    }
+
+    impl MembershipFunction {
+        pub fn new(name: String, kind: Kind) -> Self {
+            Self { name, kind }
+        }
+    }
+
+    #[derive(Debug, Clone)]
     pub struct Triangle {
         a: f64,
         b: f64,
@@ -60,7 +83,7 @@ pub mod memberships {
         }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Gaussian {
         mean: f64,
         variance: f64,
@@ -77,7 +100,7 @@ pub mod memberships {
         }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Trapezoid {
         a: f64,
         b: f64,
@@ -109,28 +132,127 @@ pub mod memberships {
             }
         }
     }
+
+    #[derive(Debug, Clone)]
+    pub struct Custom {
+        name: String,
+        parameters: Vec<f64>,
+        func: fn(f64, &Vec<f64>) -> f64,
+    }
+
+    impl Custom {
+        pub fn new(name: String, parameters: Vec<f64>, func: fn(f64, &Vec<f64>) -> f64) -> Self {
+            Self {
+                name,
+                parameters,
+                func,
+            }
+        }
+        pub fn get_name(&self) -> String {
+            self.name.clone()
+        }
+    }
+
+    impl GetDegree for Custom {
+        fn get_degree(&self, x: f64) -> f64 {
+            (self.func)(x, &self.parameters)
+        }
+    }
 }
 
-pub mod fuzzy_inference_system {
-    use crate::memberships::*;
+pub mod variables {
 
-    pub struct MamdaniFIS {
-        inputs: Vec<Variables>,
-        outputs: Vec<Variables>,
+    use crate::membership_functions::{GetDegree, MembershipFunction};
+
+    #[derive(Debug, Clone, PartialEq)]
+    pub enum Kind {
+        Input,
+        Output,
     }
+    #[derive(Debug, Clone)]
     pub struct Variables {
         name: String,
-        range: (f64, f64),
+        kind: Kind,
+        // range: (f64, f64),
         mfs: Vec<MembershipFunction>,
     }
+
     impl Variables {
-        pub fn new(name: String, range: (f64, f64)) -> Self {
+        /*
+        pub fn new(name: String, kind: Kind) -> Self {
             Variables {
                 name,
-                range,
+                kind,
                 mfs: Vec::new(),
             }
         }
+        */
+
+        pub fn new_input(name: String) -> Self {
+            Variables {
+                name,
+                kind: Kind::Input,
+                mfs: Vec::new(),
+            }
+        }
+
+        pub fn new_output(name: String) -> Self {
+            Variables {
+                name,
+                kind: Kind::Output,
+                mfs: Vec::new(),
+            }
+        }
+
+        pub fn add_membership(&mut self, mf: MembershipFunction) {
+            self.mfs.push(mf);
+        }
+
+        pub fn fuzzify(&self, name: String, x: f64) -> f64 {
+            assert_eq!(self.kind, Kind::Input);
+            for mf in self.mfs.iter() {
+                if mf.name == name {
+                    return mf.get_degree(x);
+                }
+            }
+            0.0
+        }
+    }
+}
+
+pub mod t_norms {
+    pub struct TNorms;
+    impl TNorms {
+        pub fn min(mu1: f64, mu2: f64) -> f64 {
+            if mu1 > mu2 {
+                return mu2;
+            }
+            mu1
+        }
+    }
+}
+
+pub mod s_norms {
+    pub struct SNorms;
+    impl SNorms {
+        pub fn max(mu1: f64, mu2: f64) -> f64 {
+            if mu1 > mu2 {
+                return mu1;
+            }
+            mu2
+        }
+    }
+}
+
+pub mod fuzzy_inference_system {
+    use crate::variables::Variables;
+    #[allow(unused)]
+    #[derive(Debug)]
+    pub struct MamdaniFIS {
+        t_norms: fn(f64, f64) -> f64,
+        s_norms: fn(f64, f64) -> f64,
+        inputs: Vec<Variables>,
+        outputs: Vec<Variables>,
     }
 }
 
