@@ -24,7 +24,6 @@ pub mod membership_functions {
         Normal(Gaussian),
         Custom(Custom),
     }
-
     impl GetDegree for Kind {
         fn get_degree(&self, x: f64) -> f64 {
             match self {
@@ -36,11 +35,15 @@ pub mod membership_functions {
         }
     }
 
+    pub type MFKind = Kind;
+
     #[derive(Debug, Clone)]
     pub struct MembershipFunction {
         pub name: String,
         pub kind: Kind,
     }
+
+    pub type MF = MembershipFunction;
 
     impl GetDegree for MembershipFunction {
         fn get_degree(&self, x: f64) -> f64 {
@@ -50,7 +53,7 @@ pub mod membership_functions {
 
     impl MembershipFunction {
         pub fn new(name: String, kind: Kind) -> Self {
-            Self { name, kind }
+            MF { name, kind }
         }
     }
 
@@ -88,6 +91,7 @@ pub mod membership_functions {
         mean: f64,
         variance: f64,
     }
+
     impl Gaussian {
         pub fn new(mean: f64, variance: f64) -> Self {
             Self { mean, variance }
@@ -165,7 +169,7 @@ pub mod variables {
     use crate::membership_functions::{GetDegree, MembershipFunction};
 
     #[derive(Debug, Clone, PartialEq)]
-    pub enum Kind {
+    enum Kind {
         Input,
         Output,
     }
@@ -176,7 +180,7 @@ pub mod variables {
         // range: (f64, f64),
         mfs: Vec<MembershipFunction>,
     }
-
+    pub type Var = Variables;
     impl Variables {
         /*
         pub fn new(name: String, kind: Kind) -> Self {
@@ -189,7 +193,7 @@ pub mod variables {
         */
 
         pub fn new_input(name: String) -> Self {
-            Variables {
+            Var {
                 name,
                 kind: Kind::Input,
                 mfs: Vec::new(),
@@ -197,7 +201,7 @@ pub mod variables {
         }
 
         pub fn new_output(name: String) -> Self {
-            Variables {
+            Var {
                 name,
                 kind: Kind::Output,
                 mfs: Vec::new(),
@@ -221,38 +225,203 @@ pub mod variables {
 }
 
 pub mod t_norms {
-    pub struct TNorms;
+
+    #[derive(Debug)]
+    pub enum TNorms {
+        Min,
+        Product,
+        Custom(Custom),
+    }
+
     impl TNorms {
-        pub fn min(mu1: f64, mu2: f64) -> f64 {
-            if mu1 > mu2 {
-                return mu2;
+        pub fn t_norm(&self, fuzzified: Vec<f64>) -> f64 {
+            match self {
+                Self::Min => min(fuzzified),
+                Self::Product => product(fuzzified),
+                Self::Custom(c) => (c.func)(fuzzified),
+                // _ => 0.0,
             }
-            mu1
+        }
+    }
+
+    fn min(fuzzified: Vec<f64>) -> f64 {
+        assert_ne!(fuzzified.len(), 0);
+        fuzzified
+            .into_iter()
+            .min_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+    }
+
+    fn product(fuzzified: Vec<f64>) -> f64 {
+        assert_ne!(fuzzified.len(), 0);
+        fuzzified.iter().product()
+    }
+
+    #[derive(Debug)]
+    pub struct Custom {
+        func: fn(Vec<f64>) -> f64,
+    }
+
+    impl Custom {
+        pub fn new(func: fn(Vec<f64>) -> f64) -> Self {
+            Self { func }
         }
     }
 }
 
 pub mod s_norms {
-    pub struct SNorms;
+
+    #[derive(Debug)]
+    pub enum SNorms {
+        Max,
+        Custom(Custom),
+    }
+
     impl SNorms {
-        pub fn max(mu1: f64, mu2: f64) -> f64 {
-            if mu1 > mu2 {
-                return mu1;
+        pub fn s_norm(&self, fuzzified: Vec<f64>) -> f64 {
+            match self {
+                Self::Max => max(fuzzified),
+                Self::Custom(c) => (c.func)(fuzzified),
             }
-            mu2
+        }
+    }
+
+    fn max(fuzzified: Vec<f64>) -> f64 {
+        assert_ne!(fuzzified.len(), 0);
+        fuzzified
+            .into_iter()
+            .max_by(|a, b| a.partial_cmp(b).unwrap())
+            .unwrap()
+    }
+
+    #[derive(Debug)]
+    pub struct Custom {
+        func: fn(Vec<f64>) -> f64,
+    }
+
+    impl Custom {
+        pub fn new(func: fn(Vec<f64>) -> f64) -> Self {
+            Self { func }
+        }
+    }
+}
+
+pub mod rule {
+
+    #[derive(Debug)]
+    enum Kind {
+        OR,
+        AND,
+    }
+
+    #[derive(Debug)]
+    pub struct Rule {
+        relations: Vec<i32>,
+        weight: f64,
+        method: Kind,
+    }
+
+    impl Rule {
+        pub fn new_or(relations: Vec<i32>, weight: f64) -> Self {
+            Self {
+                relations,
+                weight,
+                method: Kind::OR,
+            }
+        }
+
+        pub fn new_and(relations: Vec<i32>, weight: f64) -> Self {
+            Self {
+                relations,
+                weight,
+                method: Kind::AND,
+            }
         }
     }
 }
 
 pub mod fuzzy_inference_system {
+    use crate::rule::Rule;
+    use crate::s_norms::SNorms;
+    use crate::t_norms::TNorms;
     use crate::variables::Variables;
-    #[allow(unused)]
+
     #[derive(Debug)]
-    pub struct MamdaniFIS {
-        t_norms: fn(f64, f64) -> f64,
-        s_norms: fn(f64, f64) -> f64,
+    pub struct MamdaniFuzzyInferenceSystem {
+        s_norm: SNorms,
+        t_norm: TNorms,
+        rules: Vec<Rule>,
         inputs: Vec<Variables>,
         outputs: Vec<Variables>,
+    }
+
+    pub type MamdaniFIS = MamdaniFuzzyInferenceSystem;
+
+    impl MamdaniFuzzyInferenceSystem {
+        pub fn new(s_norm: SNorms, t_norm: TNorms) -> Self {
+            Self {
+                s_norm,
+                t_norm,
+                rules: Vec::new(),
+                inputs: Vec::new(),
+                outputs: Vec::new(),
+            }
+        }
+
+        pub fn new_all(
+            s_norm: SNorms,
+            t_norm: TNorms,
+            rules: Vec<Rule>,
+            inputs: Vec<Variables>,
+            outputs: Vec<Variables>,
+        ) -> Self {
+            Self {
+                s_norm,
+                t_norm,
+                rules,
+                inputs,
+                outputs,
+            }
+        }
+
+        pub fn add_input(&mut self, input: Variables) {
+            self.inputs.push(input);
+        }
+
+        pub fn add_output(&mut self, output: Variables) {
+            self.outputs.push(output);
+        }
+
+        pub fn add_rule(&mut self, rule: Rule) {
+            self.rules.push(rule);
+        }
+
+        pub fn compute_s_norm(&self, fuzzified: Vec<f64>) -> f64 {
+            self.s_norm.s_norm(fuzzified)
+        }
+
+        pub fn compute_t_norm(&self, fuzzified: Vec<f64>) -> f64 {
+            self.t_norm.t_norm(fuzzified)
+        }
+        #[allow(unused)]
+        pub fn compute_outputs(&self, input: f64) -> Vec<f64> {
+            let mut out = Vec::new();
+
+            let defuzzified: Vec<f64> = self
+                .inputs
+                .iter()
+                .map(|e| e.fuzzify("L".to_string(), input))
+                .collect();
+
+            println!("{:#?}", defuzzified);
+
+            // TODO add code for implications
+            // TODO add code for inference system
+            // TODO add code for aggregation
+            // TODO add code for defuzzification
+
+            out
+        }
     }
 }
 
