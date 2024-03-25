@@ -1,13 +1,14 @@
 [package]
-name = "fuzzy-logic-rs"
-version = "0.2.0"
+name = "fuzzy-logic_rs"
+version = "0.2.2"
 edition = "2021"
 authors = ["Seyed Mohammad Amin Sadat <s.mohammad.amin.sadat@gmail.com>"]
 description = "An implementation of fuzzy logic in rust!"
-readme = "readme.md"
+readme = "./readme.md"
 repository = "https://github.com/MechaNeurons/fuzzy-logic-rs"
 license = "MIT"
-license-file = "LICENSE"
+license-file = "./LICENSE"
+homepage = "https://mechaneurons.github.io/"
 keywords = ["fuzzy-logic","fuzzy-arithmetics","fuzzy-control","AI"]
 categories = ["mathematics","science"]
 
