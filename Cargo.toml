@@ -1,5 +1,5 @@
 [package]
-name = "fuzzy-logic_rs"
+name = "fuzzy-logic-rs"
 version = "0.2.0"
 edition = "2021"
 authors = ["Seyed Mohammad Amin Sadat <s.mohammad.amin.sadat@gmail.com>"]
