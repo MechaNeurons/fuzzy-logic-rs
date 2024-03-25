@@ -1,10 +1,13 @@
 # Fuzzy-Logic-rs
 
+> [!CAUTION]
+> This repository is not complete yet. If you have any suggestions on how to make it better please send me an email.
+
 In this project I've tried to implement a simple and lightweight implementation of fuzzy logic only using std.
 
 ## Membership Functions
 
-I have implemented some usefull membership functions. Also you can define a custom membership function if you like using `::new()` . Here is a List of all implemented membership functions.
+I have implemented some useful membership functions. Also you can define a custom membership function if you like using `::new()` . Here is a List of all implemented membership functions.
 
 1. Triangular
 2. Trapezoidal
@@ -24,4 +27,12 @@ Right now all 4 main operators are implemented.(i.e. `+ - * /`)
 
 ## Inference Systems
 
-* [ ] TODO
+* [ ] Mamdani
+* [ ] TSK
+
+## Future Plans
+
+* [ ] add meta-heuristics
+* [ ] add ANFIS support
+* [ ] add dedicated control module
+* [ ] add fuzzy c-means

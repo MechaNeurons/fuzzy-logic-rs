@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "fuzzy_logic_rs"
+name = "fuzzy-logic_rs"
 version = "0.2.0"
