@@ -1,72 +1,24 @@
-use std::{
-    ops::{Add, Div, Index, Mul, Neg, Sub},
-    usize,
-};
+// use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
-pub struct Universe {
-    data: Vec<f64>,
-}
-#[derive(Debug)]
-pub struct MembershipRange<'a> {
-    pub universe: &'a Universe,
+pub struct MembershipRange {
     name: String,
     mu: Vec<f64>,
 }
-
+/*
 #[derive(Debug)]
-pub enum Kind {
+pub enum MembershipRangeKind {
     Triangle,
     Trapezoid,
     Gaussian,
     Custom,
 }
-#[derive(Debug)]
-#[allow(unused)]
-pub struct VariableRange<'a> {
-    name: String,
-    pub ranges: Vec<MembershipRange<'a>>,
-}
-
-impl<'a> VariableRange<'a> {
-    pub fn new(name: String) -> Self {
-        Self {
-            name,
-            ranges: Vec::new(),
-        }
+*/
+impl MembershipRange {
+    pub fn new(name: String, mu: Vec<f64>) -> Self {
+        Self { name, mu }
     }
-    pub fn add_membership_range(&mut self, mfr: MembershipRange<'a>) {
-        self.ranges.push(mfr);
-    }
-
-    pub fn get_mu(&self, idx: usize) -> &Vec<f64> {
-        self.ranges[idx].get_mu()
-    }
-}
-
-impl Index<usize> for Universe {
-    type Output = f64;
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.data[index]
-    }
-}
-
-#[allow(unused)]
-impl Universe {
-    pub fn new(start: f64, end: f64, n: usize) -> Self {
-        let mut data: Vec<f64> = Vec::new();
-        let dt: f64 = (end - start) / (n as f64);
-        for i in 0..n {
-            data.push(start + (i as f64) * dt);
-        }
-        Self { data }
-    }
-}
-impl<'a> MembershipRange<'a> {
-    pub fn new(universe: &'a Universe, name: String, mu: Vec<f64>) -> Self {
-        Self { universe, name, mu }
-    }
-    pub fn new_triangle(universe: &'a Universe, name: String, a: f64, b: f64, c: f64) -> Self {
+    pub fn new_triangle(universe: &Vec<f64>, name: String, a: f64, b: f64, c: f64) -> Self {
         assert!(a < b, "a must be less than b");
         assert!(b < c, "b must be less that c");
         let mut mu: Vec<f64> = Vec::new();
@@ -83,10 +35,10 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
     pub fn new_trapezoid(
-        universe: &'a Universe,
+        universe: &Vec<f64>,
         name: String,
         a: f64,
         b: f64,
@@ -113,10 +65,10 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
-    pub fn new_linearz(universe: &'a Universe, name: String, a: f64, b: f64) -> Self {
+    pub fn new_linearz(universe: &Vec<f64>, name: String, a: f64, b: f64) -> Self {
         assert!(a < b);
         let mut mu: Vec<f64> = Vec::new();
         let mut data: f64;
@@ -130,10 +82,10 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
-    pub fn new_linears(universe: &'a Universe, name: String, a: f64, b: f64) -> Self {
+    pub fn new_linears(universe: &Vec<f64>, name: String, a: f64, b: f64) -> Self {
         assert!(a < b);
         let mut mu: Vec<f64> = Vec::new();
         let mut data: f64;
@@ -147,10 +99,10 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
-    pub fn new_step_down(universe: &'a Universe, name: String, a: f64) -> Self {
+    pub fn new_step_down(universe: &Vec<f64>, name: String, a: f64) -> Self {
         let mut mu: Vec<f64> = Vec::new();
         for x in universe.into_iter() {
             let mut data: f64 = 1.0;
@@ -159,10 +111,10 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
-    pub fn new_step_up(universe: &'a Universe, name: String, a: f64) -> Self {
+    pub fn new_step_up(universe: &Vec<f64>, name: String, a: f64) -> Self {
         let mut mu: Vec<f64> = Vec::new();
         for x in universe.into_iter() {
             let mut data: f64 = 0.0;
@@ -171,20 +123,21 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
-    pub fn new_gaussian(universe: &'a Universe, name: String, mean: f64, variance: f64) -> Self {
+    pub fn new_gaussian(universe: &Vec<f64>, name: String, mean: f64, variance: f64) -> Self {
         let mut mu: Vec<f64> = Vec::new();
+        assert!(variance > 0.0);
         for x in universe.into_iter() {
             let data: f64 = f64::exp(-0.5 * f64::powi((*x - mean) / variance, 2));
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
     pub fn new_double_gaussian(
-        universe: &'a Universe,
+        universe: &Vec<f64>,
         name: String,
         mean1: f64,
         variance1: f64,
@@ -192,6 +145,8 @@ impl<'a> MembershipRange<'a> {
         variance2: f64,
     ) -> Self {
         assert!(mean1 <= mean2, "mean1 must be less than mean2");
+        assert!(variance1 > 0.0);
+        assert!(variance2 > 0.0);
         let mut mu: Vec<f64> = Vec::new();
         for x in universe.into_iter() {
             let data: f64;
@@ -204,22 +159,24 @@ impl<'a> MembershipRange<'a> {
             }
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
     pub fn new_bell(
-        universe: &'a Universe,
+        universe: &Vec<f64>,
         name: String,
         width: f64,
         shape: f64,
         center: f64,
     ) -> Self {
         let mut mu: Vec<f64> = Vec::new();
+        assert!(width > 0.0);
+        assert!(shape > 0.0);
         for x in universe.into_iter() {
             let data = 1.0 / (1.0 + f64::powf(f64::abs((*x - center) / width), 2.0 * shape));
             mu.push(data);
         }
-        Self { universe, name, mu }
+        Self { name, mu }
     }
 
     pub fn get_mu(&self) -> &Vec<f64> {
@@ -231,7 +188,7 @@ impl<'a> MembershipRange<'a> {
     }
 }
 
-impl<'a> IntoIterator for MembershipRange<'a> {
+impl IntoIterator for MembershipRange {
     type Item = f64;
     type IntoIter = std::vec::IntoIter<f64>;
     fn into_iter(self) -> Self::IntoIter {
@@ -239,23 +196,8 @@ impl<'a> IntoIterator for MembershipRange<'a> {
     }
 }
 
-impl IntoIterator for Universe {
-    type Item = f64;
-    type IntoIter = std::vec::IntoIter<f64>;
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.into_iter()
-    }
-}
-
-impl<'a> IntoIterator for &'a Universe {
-    type Item = &'a f64;
-    type IntoIter = std::slice::Iter<'a, f64>;
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.iter()
-    }
-}
-
-impl<'a> Add for MembershipRange<'a> {
+/*
+impl Add for MembershipRange {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {
         assert_eq!(
@@ -283,28 +225,24 @@ impl<'a> Add for MembershipRange<'a> {
             mu[j] /= max;
         }
 
-        MembershipRange::new(self.universe, self.name.clone(), mu)
+        MembershipRange::new(self.name.clone(), mu)
     }
 }
 
-impl<'a> Neg for MembershipRange<'a> {
+impl Neg for MembershipRange {
     type Output = Self;
     fn neg(self) -> Self::Output {
         let mut mu: Vec<f64> = Vec::new();
         for i in 0..self.mu.len() {
             mu.push(-self.mu[i]);
         }
-        MembershipRange::new(self.universe, self.name.clone(), mu)
+        MembershipRange::new(self.name.clone(), mu)
     }
 }
 
-impl<'a> Sub for MembershipRange<'a> {
+impl Sub for MembershipRange {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
-        assert_eq!(
-            self.universe as *const _, rhs.universe as *const _,
-            "Universes must be the same"
-        );
         let mut mu: Vec<f64> = Vec::new();
         let mut max: f64 = -f64::INFINITY;
         let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
@@ -326,17 +264,13 @@ impl<'a> Sub for MembershipRange<'a> {
             mu[j] /= max;
         }
 
-        MembershipRange::new(self.universe, self.name.clone(), mu)
+        MembershipRange::new(self.name.clone(), mu)
     }
 }
 
-impl<'a> Mul for MembershipRange<'a> {
+impl Mul for MembershipRange {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self::Output {
-        assert_eq!(
-            self.universe as *const _, rhs.universe as *const _,
-            "Universes must be the same"
-        );
         let mut mu: Vec<f64> = Vec::new();
         let mut max: f64 = -f64::INFINITY;
         let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
@@ -358,17 +292,13 @@ impl<'a> Mul for MembershipRange<'a> {
             mu[j] /= max;
         }
 
-        MembershipRange::new(self.universe, self.name.clone(), mu)
+        MembershipRange::new(self.name.clone(), mu)
     }
 }
 
-impl<'a> Div for MembershipRange<'a> {
+impl Div for MembershipRange {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        assert_eq!(
-            self.universe as *const _, rhs.universe as *const _,
-            "Universes must be the same"
-        );
         let mut mu: Vec<f64> = Vec::new();
         let mut max: f64 = -f64::INFINITY;
         let epsilon: f64 = 0.05 * (self.universe[1] - self.universe[0]);
@@ -390,6 +320,7 @@ impl<'a> Div for MembershipRange<'a> {
             mu[j] /= max;
         }
 
-        MembershipRange::new(self.universe, self.name.clone(), mu)
+        MembershipRange::new(self.name.clone(), mu)
     }
 }
+*/

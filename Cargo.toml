@@ -1,19 +1,21 @@
 [package]
 name = "fuzzy-logic_rs"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 authors = ["Seyed Mohammad Amin Sadat <s.mohammad.amin.sadat@gmail.com>"]
 description = "An implementation of fuzzy logic in rust!"
 readme = "./readme.md"
 repository = "https://github.com/MechaNeurons/fuzzy-logic-rs"
-license = "MIT"
+# license = "MIT"
+documentation= "https://mechaneurons.github.io/Fuzzy-Logic-rs/"
 license-file = "./LICENSE"
 homepage = "https://mechaneurons.github.io/"
 keywords = ["fuzzy-logic","fuzzy-arithmetics","fuzzy-control","AI"]
 categories = ["mathematics","science"]
-exclude = ["src\\main.rs"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 
-[[examples]]
+[[example]]
+name="speed-control"
+path="examples/speed_control.rs"

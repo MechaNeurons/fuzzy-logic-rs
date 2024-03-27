@@ -5,6 +5,9 @@
 > I will update it frequently.
 > Please follow for more updates!
 
+## Documentation
+You can view a complete documentation at [here.](https://mechaneurons.github.io/Fuzzy-Logic-rs/)
+
 In this project I've tried to implement a simple and lightweight implementation of fuzzy logic only using std.
 
 ## Membership Functions
@@ -21,15 +24,9 @@ I have implemented some useful membership functions. Also you can define a custo
 8. Double-Gaussian
 9. Bell shape
 
-## Operations
-
-Right now all 4 main operators are implemented.(i.e. `+ - * /`)
-
-* [ ] TODO: add compound operators
-
 ## Inference Systems
 
-* [ ] Mamdani Type 1
+* [*] Mamdani Type 1
 * [ ] Mamdani Type 2
 * [ ] TSK Type 1
 * [ ] TSK Type 2
@@ -37,6 +34,7 @@ Right now all 4 main operators are implemented.(i.e. `+ - * /`)
 ## Future Plans
 
 * [ ] Import and Export systems to and from a file
+* [ ] Add plot support
 * [ ] add meta-heuristics
 * [ ] add ANFIS support
 * [ ] add dedicated control module

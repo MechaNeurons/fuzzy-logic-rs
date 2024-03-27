@@ -9,10 +9,10 @@ pub trait GetDegree {
 pub enum Kind {
     Triangle(Triangle),
     Trapezoid(Trapezoid),
-    LinearZ,
-    LinearS,
-    StepDown,
-    StepUp,
+    LinearZ(LinearZ),
+    LinearS(LinearS),
+    StepDown(StepDown),
+    StepUp(StepUp),
     Gaussian(Gaussian),
     DoubleGaussian,
     Bell,
@@ -24,6 +24,10 @@ impl GetDegree for Kind {
         match self {
             Self::Triangle(mf) => mf.get_degree(x),
             Self::Trapezoid(mf) => mf.get_degree(x),
+            Self::LinearZ(mf) => mf.get_degree(x),
+            Self::LinearS(mf) => mf.get_degree(x),
+            Self::StepUp(mf) => mf.get_degree(x),
+            Self::StepDown(mf) => mf.get_degree(x),
             Self::Gaussian(mf) => mf.get_degree(x),
             Self::Custom(mf) => mf.get_degree(x),
             _ => 0.0,
@@ -86,24 +90,6 @@ impl GetDegree for Triangle {
 }
 
 #[derive(Debug, Clone)]
-pub struct Gaussian {
-    mean: f64,
-    variance: f64,
-}
-
-impl Gaussian {
-    pub fn new(mean: f64, variance: f64) -> Self {
-        Self { mean, variance }
-    }
-}
-
-impl GetDegree for Gaussian {
-    fn get_degree(&self, x: f64) -> f64 {
-        f64::exp(-0.5 * f64::powi((x - self.mean) / self.variance, 2))
-    }
-}
-
-#[derive(Debug, Clone)]
 pub struct Trapezoid {
     a: f64,
     b: f64,
@@ -159,5 +145,172 @@ impl Custom {
 impl GetDegree for Custom {
     fn get_degree(&self, x: f64) -> f64 {
         (self.func)(x, &self.parameters)
+    }
+}
+#[derive(Debug, Clone)]
+pub struct LinearS {
+    a: f64,
+    b: f64,
+}
+
+impl LinearS {
+    pub fn new(a: f64, b: f64) -> Self {
+        assert!(a < b, "a must be grater that b");
+        Self { a, b }
+    }
+}
+
+impl GetDegree for LinearS {
+    fn get_degree(&self, x: f64) -> f64 {
+        if x < self.a {
+            return 0.0;
+        } else if x < self.b {
+            return (x - self.a) / (self.b - self.a);
+        } else {
+            return 1.0;
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct LinearZ {
+    a: f64,
+    b: f64,
+}
+
+impl LinearZ {
+    pub fn new(a: f64, b: f64) -> Self {
+        assert!(a < b, "a must be grater that b");
+        Self { a, b }
+    }
+}
+
+impl GetDegree for LinearZ {
+    fn get_degree(&self, x: f64) -> f64 {
+        if x < self.a {
+            return 1.0;
+        } else if x < self.b {
+            return (self.a - x) / (self.a - self.b);
+        } else {
+            return 0.0;
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct StepDown {
+    a: f64,
+}
+
+impl StepDown {
+    pub fn new(a: f64) -> Self {
+        Self { a }
+    }
+}
+
+impl GetDegree for StepDown {
+    fn get_degree(&self, x: f64) -> f64 {
+        if x > self.a {
+            return 0.0;
+        }
+        1.0
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct StepUp {
+    a: f64,
+}
+
+impl StepUp {
+    pub fn new(a: f64) -> Self {
+        Self { a }
+    }
+}
+
+impl GetDegree for StepUp {
+    fn get_degree(&self, x: f64) -> f64 {
+        if x > self.a {
+            return 1.0;
+        }
+        1.0
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Gaussian {
+    mean: f64,
+    variance: f64,
+}
+
+impl Gaussian {
+    pub fn new(mean: f64, variance: f64) -> Self {
+        assert!(variance > 0.0);
+        Self { mean, variance }
+    }
+}
+
+impl GetDegree for Gaussian {
+    fn get_degree(&self, x: f64) -> f64 {
+        f64::exp(-0.5 * f64::powi((x - self.mean) / self.variance, 2))
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct DoubleGaussian {
+    mean1: f64,
+    variance1: f64,
+    mean2: f64,
+    variance2: f64,
+}
+
+impl DoubleGaussian {
+    pub fn new(mean1: f64, variance1: f64, mean2: f64, variance2: f64) -> Self {
+        assert!(mean1 <= mean2, "mean1 must be less than mean2");
+        assert!(variance1 > 0.0);
+        assert!(variance2 > 0.0);
+        Self {
+            mean1,
+            variance1,
+            mean2,
+            variance2,
+        }
+    }
+}
+
+impl GetDegree for DoubleGaussian {
+    fn get_degree(&self, x: f64) -> f64 {
+        if x < self.mean1 {
+            return f64::exp(-0.5 * f64::powi((x - self.mean1) / self.variance1, 2));
+        } else if x < self.mean2 {
+            return 1.0;
+        } else {
+            return f64::exp(-0.5 * f64::powi((x - self.mean2) / self.variance2, 2));
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Bell {
+    width: f64,
+    shape: f64,
+    center: f64,
+}
+
+impl Bell {
+    pub fn new(width: f64, shape: f64, center: f64) -> Self {
+        assert!(width > 0.0);
+        assert!(shape > 0.0);
+        Self {
+            width,
+            shape,
+            center,
+        }
+    }
+}
+
+impl GetDegree for Bell {
+    fn get_degree(&self, x: f64) -> f64 {
+        1.0 / (1.0 + f64::powf(f64::abs((x - self.center) / self.width), 2.0 * self.shape))
     }
 }

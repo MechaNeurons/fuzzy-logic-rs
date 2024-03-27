@@ -1,4 +1,5 @@
 /target/
 /.vscode/
 /site/
-src/main.src
+src/main.rs
+/venv/
