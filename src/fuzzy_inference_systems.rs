@@ -7,7 +7,6 @@ use crate::t_norms::TNorms;
 use crate::variables::{InputVariables, OutputVariables};
 
 #[derive(Debug)]
-#[allow(unused)]
 pub struct MamdaniFuzzyInferenceSystem {
     s_norm: SNorms,
     t_norm: TNorms,
@@ -18,8 +17,7 @@ pub struct MamdaniFuzzyInferenceSystem {
     inputs: Vec<InputVariables>,
     outputs: Vec<OutputVariables>,
 }
-// TODO: remove the universe and make it internal
-// TODO: add range field to the variables
+
 
 pub type MamdaniFIS = MamdaniFuzzyInferenceSystem;
 
@@ -87,7 +85,7 @@ impl MamdaniFuzzyInferenceSystem {
     pub fn compute_t_norm(&self, fuzzified: Vec<f64>) -> f64 {
         self.t_norm.t_norm(fuzzified)
     }
-    #[allow(unused)]
+    
     pub fn compute_outputs(&self, input_vec: Vec<f64>) -> Vec<f64> {
         let mut out = Vec::new();
         let size_inputs = self.inputs.len();

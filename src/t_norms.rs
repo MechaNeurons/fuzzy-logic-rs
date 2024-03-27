@@ -2,7 +2,7 @@
 pub enum TNorms {
     Min,
     Product,
-    Custom(Custom),
+    Custom(fn(Vec<f64>) -> f64),
 }
 
 impl TNorms {
@@ -10,7 +10,7 @@ impl TNorms {
         match self {
             Self::Min => min(fuzzified),
             Self::Product => product(fuzzified),
-            Self::Custom(c) => (c.func)(fuzzified),
+            Self::Custom(c) => c(fuzzified),
             // _ => 0.0,
         }
     }
@@ -27,15 +27,4 @@ fn min(fuzzified: Vec<f64>) -> f64 {
 fn product(fuzzified: Vec<f64>) -> f64 {
     assert_ne!(fuzzified.len(), 0);
     fuzzified.iter().product()
-}
-
-#[derive(Debug)]
-pub struct Custom {
-    func: fn(Vec<f64>) -> f64,
-}
-
-impl Custom {
-    pub fn new(func: fn(Vec<f64>) -> f64) -> Self {
-        Self { func }
-    }
 }

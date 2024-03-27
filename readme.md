@@ -26,7 +26,7 @@ I have implemented some useful membership functions. Also you can define a custo
 
 ## Inference Systems
 
-* [*] Mamdani Type 1
+* [x] Mamdani Type 1
 * [ ] Mamdani Type 2
 * [ ] TSK Type 1
 * [ ] TSK Type 2

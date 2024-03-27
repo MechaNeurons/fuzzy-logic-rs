@@ -14,8 +14,8 @@ pub enum Kind {
     StepDown(StepDown),
     StepUp(StepUp),
     Gaussian(Gaussian),
-    DoubleGaussian,
-    Bell,
+    DoubleGaussian(DoubleGaussian),
+    Bell(Bell),
     Normal(Gaussian),
     Custom(Custom),
 }
@@ -30,7 +30,9 @@ impl GetDegree for Kind {
             Self::StepDown(mf) => mf.get_degree(x),
             Self::Gaussian(mf) => mf.get_degree(x),
             Self::Custom(mf) => mf.get_degree(x),
-            _ => 0.0,
+            Self::Bell(mf)=>mf.get_degree(x),
+            Self::DoubleGaussian(mf)=>mf.get_degree(x),
+            _ => 0.0
         }
     }
 }

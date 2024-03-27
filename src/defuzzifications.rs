@@ -4,20 +4,23 @@ use std::iter::zip;
 pub enum Defuzzifiers {
     Centroid,
     Bisection,
+    Custom(fn(Vec<f64>,&Vec<f64>)->f64),
 }
+
 impl Defuzzifiers {
-    pub fn defuzzify(&self, vec: Vec<f64>, univerers: &Vec<f64>) -> f64 {
+    pub fn defuzzify(&self, vec: Vec<f64>, universe: &Vec<f64>) -> f64 {
         match self {
-            Self::Centroid => centroid_defuzzification(vec, univerers),
-            Self::Bisection => bisection_defuzzification(vec, univerers),
+            Self::Centroid => centroid_defuzzification(vec, universe),
+            Self::Bisection => bisection_defuzzification(vec, universe),
+            Self::Custom(f)=> f(vec,universe),
         }
     }
 }
 
 pub fn centroid_defuzzification(vec: Vec<f64>, universe: &Vec<f64>) -> f64 {
     let numerator: f64 = zip(&vec, universe).map(|(e, u)| e * u).sum();
-    let denomerator: f64 = (&vec).iter().sum();
-    let idx = numerator / denomerator;
+    let denominator: f64 = (&vec).iter().sum();
+    let idx = numerator / denominator;
     idx
 }
 
