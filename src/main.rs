@@ -1,6 +1,10 @@
 use fuzzy_logic_rs::{
+    aggregations::Aggregations,
+    defuzzifications::Defuzzifiers,
     fuzzy_inference_systems::MamdaniFIS,
-    membership_functions::{Gaussian, MFKind, Triangle, MF},
+    implications::Implications,
+    membership_functions::{MFKind, Triangle, MF},
+    membership_ranges::{MembershipRange, Universe, VariableRange},
     rules::Rule,
     s_norms::SNorms,
     t_norms::TNorms,
@@ -36,29 +40,46 @@ fn main() {
         MFKind::Triangle(Triangle::new(29.17, 50.0, 70.82)),
     ));
 
-    let mut o1 = Variables::new_output("Acceleration".to_string());
-    o1.add_membership(MF::new(
+    let u1 = Universe::new(-1.0, 1.0, 500);
+    let mut o1 = VariableRange::new(String::from("Acceleration"));
+    o1.add_membership_range(MembershipRange::new_gaussian(
+        &u1,
         "NB".to_string(),
-        MFKind::Gaussian(Gaussian::new(-1.0, 0.2123)),
+        -0.8,
+        0.2123,
     ));
-    o1.add_membership(MF::new(
+    o1.add_membership_range(MembershipRange::new_gaussian(
+        &u1,
         "NS".to_string(),
-        MFKind::Gaussian(Gaussian::new(-0.25, 0.2123)),
+        -0.25,
+        0.2123,
     ));
-    o1.add_membership(MF::new(
+    o1.add_membership_range(MembershipRange::new_gaussian(
+        &u1,
         "ZR".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.0, 0.2123)),
+        0.0,
+        0.2123,
     ));
-    o1.add_membership(MF::new(
+    o1.add_membership_range(MembershipRange::new_gaussian(
+        &u1,
         "PS".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.25, 0.2123)),
+        0.25,
+        0.2123,
     ));
-    o1.add_membership(MF::new(
+    o1.add_membership_range(MembershipRange::new_gaussian(
+        &u1,
         "PB".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.8, 0.2123)),
+        0.8,
+        0.2123,
     ));
 
-    let mut fis = MamdaniFIS::new(SNorms::Max, TNorms::Min);
+    let mut fis = MamdaniFIS::new(
+        SNorms::Max,
+        TNorms::Min,
+        Implications::Min,
+        Aggregations::Max,
+        Defuzzifiers::Bisection,
+    );
     fis.add_input(v1);
     fis.add_input(v2);
     fis.add_output(o1);
@@ -75,5 +96,5 @@ fn main() {
     fis.add_rule(Rule::new_and(vec![2, 1, 1], 1.0));
     fis.add_rule(Rule::new_and(vec![2, 2, 2], 1.0));
 
-    fis.compute_outputs(vec![40.0, 13.0]);
+    fis.compute_outputs(vec![40.0, 43.0]);
 }

@@ -1,2 +1,4 @@
 /target/
 /.vscode/
+/site/
+src/main.src

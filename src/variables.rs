@@ -11,7 +11,6 @@ enum Kind {
 pub struct Variables {
     name: String,
     kind: Kind,
-    // range: (f64, f64),
     mfs: Vec<MembershipFunction>,
 }
 
@@ -38,17 +37,11 @@ impl Variables {
         self.mfs.push(mf);
     }
 
-    pub fn fuzzify(&self, name: &String, x: f64) -> f64 {
+    pub fn fuzzify(&self, idx: usize, x: f64) -> f64 {
         assert_eq!(self.kind, Kind::Input);
-        for mf in self.mfs.iter() {
-            if mf.get_name() == name {
-                return mf.get_degree(x);
-            }
-        }
-        0.0
+        return self.mfs[idx].get_degree(x);
     }
     pub fn membership_function_name(&self, idx: i32) -> String {
-        let mf = &self.mfs[idx as usize];
-        mf.get_name().clone()
+        self.mfs[idx as usize].get_name().clone()
     }
 }

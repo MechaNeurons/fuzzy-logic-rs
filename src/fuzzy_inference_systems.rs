@@ -1,24 +1,43 @@
+use crate::aggregations::Aggregations;
+use crate::defuzzifications::Defuzzifiers;
+use crate::implications::Implications;
+use crate::membership_ranges::VariableRange;
 use crate::rules::{self, Rule};
 use crate::s_norms::SNorms;
 use crate::t_norms::TNorms;
 use crate::variables::Variables;
 
 #[derive(Debug)]
-pub struct MamdaniFuzzyInferenceSystem {
+#[allow(unused)]
+pub struct MamdaniFuzzyInferenceSystem<'a> {
     s_norm: SNorms,
     t_norm: TNorms,
+    implication: Implications,
+    aggregation: Aggregations,
+    defuzzifier: Defuzzifiers,
     rules: Vec<Rule>,
     inputs: Vec<Variables>,
-    outputs: Vec<Variables>,
+    outputs: Vec<VariableRange<'a>>,
 }
+// TODO: remove the universe and make it internal
+// TODO: add range field to the variables
 
-pub type MamdaniFIS = MamdaniFuzzyInferenceSystem;
+pub type MamdaniFIS<'a> = MamdaniFuzzyInferenceSystem<'a>;
 
-impl MamdaniFuzzyInferenceSystem {
-    pub fn new(s_norm: SNorms, t_norm: TNorms) -> Self {
+impl<'a> MamdaniFuzzyInferenceSystem<'a> {
+    pub fn new(
+        s_norm: SNorms,
+        t_norm: TNorms,
+        implication: Implications,
+        aggregation: Aggregations,
+        defuzzifier: Defuzzifiers,
+    ) -> Self {
         Self {
             s_norm,
             t_norm,
+            implication,
+            aggregation,
+            defuzzifier,
             rules: Vec::new(),
             inputs: Vec::new(),
             outputs: Vec::new(),
@@ -28,13 +47,19 @@ impl MamdaniFuzzyInferenceSystem {
     pub fn new_all(
         s_norm: SNorms,
         t_norm: TNorms,
+        implication: Implications,
+        aggregation: Aggregations,
+        defuzzifier: Defuzzifiers,
         rules: Vec<Rule>,
         inputs: Vec<Variables>,
-        outputs: Vec<Variables>,
+        outputs: Vec<VariableRange<'a>>,
     ) -> Self {
         Self {
             s_norm,
             t_norm,
+            implication,
+            aggregation,
+            defuzzifier,
             rules,
             inputs,
             outputs,
@@ -45,7 +70,7 @@ impl MamdaniFuzzyInferenceSystem {
         self.inputs.push(input);
     }
 
-    pub fn add_output(&mut self, output: Variables) {
+    pub fn add_output(&mut self, output: VariableRange<'a>) {
         self.outputs.push(output);
     }
 
@@ -63,23 +88,36 @@ impl MamdaniFuzzyInferenceSystem {
     #[allow(unused)]
     pub fn compute_outputs(&self, input_vec: Vec<f64>) -> Vec<f64> {
         let mut out = Vec::new();
+        let size_inputs = self.inputs.len();
+        let size_outputs = self.outputs.len();
+        let size_rules = self.rules.len();
 
-        let mut fuzzified: Vec<f64> = Vec::new();
-        for i in 0..self.rules.len() {
-            let mut temp: Vec<f64> = Vec::new();
-            for ii in 0..self.inputs.len() {
-                let idx = self.rules[i].relations()[ii];
-                temp.push(self.inputs[ii].fuzzify(
-                    &self.inputs[ii].membership_function_name(idx),
-                    input_vec[ii],
-                ));
+        let mut inference_output: Vec<f64> = Vec::new();
+        for i in 0..size_rules {
+            let mut fuzzified: Vec<f64> = Vec::new();
+            for ii in 0..size_inputs {
+                let idx = self.rules[i].relations()[ii] as usize;
+                fuzzified.push(self.inputs[ii].fuzzify(idx, input_vec[ii]));
             }
-            let k = match self.rules[i].kind() {
-                rules::Kind::AND => self.t_norm.t_norm(temp),
-                rules::Kind::OR => self.s_norm.s_norm(temp),
-            };
-            fuzzified.push(k);
+            inference_output.push(match self.rules[i].kind() {
+                rules::Kind::AND => self.compute_t_norm(fuzzified),
+                rules::Kind::OR => self.compute_s_norm(fuzzified),
+            });
         }
+
+        let mut implication_output = Vec::new();
+        for i in 0..size_rules {
+            for ii in 0..size_outputs {
+                let idx = self.rules[i].relations()[ii + size_inputs] as usize;
+                let v1 = self.outputs[ii].get_mu(idx);
+                implication_output.push(self.implication.implication(inference_output[i], v1));
+            }
+        }
+
+        let aggregation_output = self.aggregation.aggregation(implication_output);
+        let idx = self.defuzzifier.defuzzify(aggregation_output) as usize;
+        println!("{idx}");
+        println!("{}", self.outputs[0].ranges[0].universe[idx]);
 
         out
     }
