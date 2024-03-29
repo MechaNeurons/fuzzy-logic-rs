@@ -105,6 +105,9 @@ pub enum Implications {
 }
 ```
 
+!!!danger "More Implication methods"
+    More implication methods will be added in the future like `Godel` or `Zadeh`.
+
 Use of this is the same as t-norms and s-norms and you can define your own methods for implications.
 
 The 1st parameter of the custom function is $\mu$ and the 2nd argument is an output range.
@@ -123,7 +126,9 @@ pub struct Rule {
 
 there are two ways to add new rules `add_or` and `add_and`. The relations vec is defined as in a rule how the inputs interact with each other.
 
-You can change the weight to a value between [0.0,1.0]
+You can change the weight to a value between [0.0 1.0].
+
+You can complement(i.e. `is not`) a membership function or a range by adding a `-` sign in front of it.
 
 ## aggregation.rs
 
@@ -152,6 +157,9 @@ pub enum Defuzzifiers {
 ```
 
 It is used as before.
+
+!!!danger "More defuzzification methods"
+    More defuzzification method will be added in the future like `CenterOfMeans` or `MeanOfMax`.
 
 ## variables.rs
 
@@ -236,11 +244,6 @@ pub enum Kind {
 
 Each of these variants have a dedicated struct that you can make using `::new()` .
 
-### Membership functions
-
-!!! note
-    This will be updated in the future. please look at examples for a quick info.
-
 ## membership_ranges.rs
 
 Membership ranges are used to define an output.
@@ -252,5 +255,6 @@ pub struct MembershipRange {
 }
 ```
 
-!!! note
-    This will be updated in the future. please look at examples for a quick info.
+## Creating a membership function or membership range
+
+They have basically the same. You can create a new using the syntax `::new_<what_kind>` and add appropriate arguments to it. Please follow the function signature or check out the [example](https://mechaneurons.github.io/fuzzy-logic-rs/examples/speed_control/) for more information.
