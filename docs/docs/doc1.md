@@ -45,9 +45,6 @@ The same is true for output but it needs an `OutputVariables`.
 pub fn add_output(&mut self, output: OutputVariables)
 ```
 
-!!! danger "Only MISO systems"
-    As of right now you must have only one output variable. The code will panic if you add more. This will change in the future.
-
 To add fuzzy rules you can use `add_rule` which accepts a `Rule` struct as an input
 
 ```rust
@@ -70,7 +67,7 @@ S-norms are used in FIS systems to compute many thing. In this crate I used it a
 ```rust
 pub enum SNorms {
     Max,
-    Custom(fn (Vec<f64>)->f64),
+    Custom(fn (&[f64])->f64),
 }
 ```
 
@@ -86,7 +83,7 @@ T-norms are used in FIS systems to compute many thing. In this crate I used it a
 pub enum TNorms {
     Min,
     Product,
-    Custom(fn(Vec<f64>) -> f64),
+    Custom(fn(&[f64]) -> f64),
 }
 ```
 
@@ -110,7 +107,7 @@ pub enum Implications {
 
 Use of this is the same as t-norms and s-norms and you can define your own methods for implications.
 
-The 1st parameter of the custom function is the $\mu$ and the 2nd argument is an output range.
+The 1st parameter of the custom function is $\mu$ and the 2nd argument is an output range.
 
 ## rules.rs
 
@@ -125,6 +122,8 @@ pub struct Rule {
 ```
 
 there are two ways to add new rules `add_or` and `add_and`. The relations vec is defined as in a rule how the inputs interact with each other.
+
+You can change the weight to a value between [0.0,1.0]
 
 ## aggregation.rs
 

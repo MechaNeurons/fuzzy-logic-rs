@@ -22,6 +22,7 @@ impl Rule {
 
     pub fn new_and(relations: Vec<i32>, weight: f64) -> Self {
         assert!(weight<=1.0,"Weight must be less or equal to 1.0");
+        assert!(weight>= 0.0 ,"Weight must be less or equal to 1.0");
         Self {
             relations,
             weight,
