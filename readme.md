@@ -1,28 +1,14 @@
 # Fuzzy-Logic-rs
 
-> [!CAUTION]
-> This repository is not complete yet. If you have any suggestions on how to make it better please send me an [email](mailto:s.mohammad.amin.sadat@gmail.com).
-> I will update it frequently.
-> Please follow for more updates!
-
-## Documentation
-You can view a complete documentation at [here.](https://mechaneurons.github.io/Fuzzy-Logic-rs/)
-
 In this project I've tried to implement a simple and lightweight implementation of fuzzy logic only using std.
 
-## Membership Functions
+> Please follow for more updates!
 
-I have implemented some useful membership functions. Also you can define a custom membership function if you like using `::new()` . Here is a List of all implemented membership functions.
+> The Mamdani type I is completed, with all regular features. Please refer to [documentation](https://mechaneurons.github.io/fuzzy-logic-rs/docs/doc1/) or for a quick start check out [examples](https://mechaneurons.github.io/fuzzy-logic-rs/examples/).
 
-1. Triangular
-2. Trapezoidal
-3. Linear-z
-4. Linear-s
-5. step-down
-6. step-up
-7. Gaussian
-8. Double-Gaussian
-9. Bell shape
+## Documentation
+You can view a complete documentation at [here.](https://mechaneurons.github.io/fuzzy-logic-rs/)
+
 
 ## Inference Systems
 
@@ -34,8 +20,9 @@ I have implemented some useful membership functions. Also you can define a custo
 ## Future Plans
 
 * [ ] Import and Export systems to and from a file
+* [ ] Create a python module
 * [ ] Add plot support
-* [ ] add meta-heuristics
-* [ ] add ANFIS support
-* [ ] add dedicated control module
-* [ ] add fuzzy c-means
+* [ ] Add meta-heuristics
+* [ ] Add ANFIS support
+* [ ] Add dedicated control module
+* [ ] Add fuzzy c-means

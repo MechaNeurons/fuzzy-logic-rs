@@ -27,11 +27,23 @@ impl Rule {
             method: Kind::AND,
         }
     }
-    pub fn relations(&self) -> &Vec<i32> {
-        &self.relations
+    pub fn get_rules(&self) -> &[i32] {
+        &self.relations[..]
     }
 
-    pub fn kind(&self) -> &Kind {
+    pub fn get_kind(&self) -> &Kind {
         &self.method
+    }
+
+    pub fn get_weight(&self) -> f64 {
+        self.weight
+    }
+
+    pub fn get_input_rules(&self, input_size: usize) -> &[i32] {
+        &self.relations[..input_size]
+    }
+
+    pub fn get_output_rules(&self, input_size: usize) -> &[i32] {
+        &self.relations[input_size..]
     }
 }

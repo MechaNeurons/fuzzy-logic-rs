@@ -2,20 +2,20 @@
 pub enum Aggregations {
     Max,
     Sum,
-    Custom(fn(Vec<Vec<f64>>) -> Vec<f64>)
+    Custom(fn(&Vec<Vec<f64>>) -> Vec<f64>),
 }
 
 impl Aggregations {
-    pub fn aggregation(&self, implication_vec: Vec<Vec<f64>>) -> Vec<f64> {
+    pub fn aggregation(&self, implication_vec: &Vec<Vec<f64>>) -> Vec<f64> {
         match self {
             Self::Max => max_aggregation(implication_vec),
             Self::Sum => sum_aggregation(implication_vec),
-            Self::Custom(f) => f(implication_vec)
+            Self::Custom(f) => f(implication_vec),
         }
     }
 }
 
-pub fn max_aggregation(implication_vec: Vec<Vec<f64>>) -> Vec<f64> {
+pub fn max_aggregation(implication_vec: &Vec<Vec<f64>>) -> Vec<f64> {
     let mut mu = Vec::new();
     let size_implication = implication_vec.len();
     let size_vec = implication_vec[0].len();
@@ -31,7 +31,7 @@ pub fn max_aggregation(implication_vec: Vec<Vec<f64>>) -> Vec<f64> {
     mu
 }
 
-pub fn sum_aggregation(implication_vec: Vec<Vec<f64>>) -> Vec<f64> {
+pub fn sum_aggregation(implication_vec: &Vec<Vec<f64>>) -> Vec<f64> {
     let mut mu = Vec::new();
     let size_implication = implication_vec.len();
     let size_vec = implication_vec[0].len();
@@ -41,6 +41,6 @@ pub fn sum_aggregation(implication_vec: Vec<Vec<f64>>) -> Vec<f64> {
             sum += implication_vec[i][ii]
         }
         mu.push(sum)
-    } 
+    }
     mu
 }

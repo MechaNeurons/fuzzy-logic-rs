@@ -88,7 +88,7 @@ fn main() {
     fis.add_rule(Rule::new_and(vec![0, 2, 4], 1.0));
 
     fis.add_rule(Rule::new_and(vec![1, 0, 1], 1.0));
-    fis.add_rule(Rule::new_and(vec![1, 1, 2], 1.0));
+    fis.add_rule(Rule::new_and(vec![1, 1, -2], 1.0));
     fis.add_rule(Rule::new_and(vec![1, 2, 3], 1.0));
 
     fis.add_rule(Rule::new_and(vec![2, 0, 0], 1.0));
@@ -96,5 +96,5 @@ fn main() {
     fis.add_rule(Rule::new_and(vec![2, 2, 2], 1.0));
 
     let output = fis.compute_outputs(vec![40.0, 43.0]);
-    println!("{:#?}", output);
+    println!("output is: {:#?}", output);
 }
