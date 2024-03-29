@@ -512,27 +512,21 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="membership_functions.rs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#membership-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Membership functions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#membership_rangesrs" class="md-nav__link">
     <span class="md-ellipsis">
       membership_ranges.rs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-membership-function-or-membership-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a membership function or membership range
     </span>
   </a>
   
@@ -762,27 +756,21 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="membership_functions.rs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#membership-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Membership functions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#membership_rangesrs" class="md-nav__link">
     <span class="md-ellipsis">
       membership_ranges.rs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-membership-function-or-membership-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a membership function or membership range
     </span>
   </a>
   
@@ -837,10 +825,6 @@
 <p>The same is true for output but it needs an <code>OutputVariables</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_output</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">output</span>: <span class="nc">OutputVariables</span><span class="p">)</span>
 </code></pre></div>
-<div class="admonition danger">
-<p class="admonition-title">Only MISO systems</p>
-<p>As of right now you must have only one output variable. The code will panic if you add more. This will change in the future.</p>
-</div>
 <p>To add fuzzy rules you can use <code>add_rule</code> which accepts a <code>Rule</code> struct as an input</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_rule</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">rule</span>: <span class="nc">Rule</span><span class="p">)</span>
 </code></pre></div>
@@ -855,7 +839,7 @@
 <p>S-norms are used in FIS systems to compute many thing. In this crate I used it as <code>or</code> method in the rules. It is defined as bellow:</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">SNorms</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">Max</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span> <span class="p">(</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span>-&gt;<span class="kt">f64</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span> <span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">])</span>-&gt;<span class="kt">f64</span><span class="p">),</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>To use default s-norms you can use the <code>Snorms::Max</code>.</p>
@@ -865,7 +849,7 @@
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">TNorms</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">Min</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Product</span><span class="p">,</span>
-<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">f64</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">])</span><span class="w"> </span>-&gt; <span class="kt">f64</span><span class="p">),</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="implicationsrs">implications.rs</h2>
@@ -880,8 +864,12 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">),</span>
 <span class="p">}</span>
 </code></pre></div>
+<div class="admonition danger">
+<p class="admonition-title">More Implication methods</p>
+<p>More implication methods will be added in the future like <code>Godel</code> or <code>Zadeh</code>.</p>
+</div>
 <p>Use of this is the same as t-norms and s-norms and you can define your own methods for implications.</p>
-<p>The 1st parameter of the custom function is the <span class="arithmatex">\(\mu\)</span> and the 2nd argument is an output range.</p>
+<p>The 1st parameter of the custom function is <span class="arithmatex">\(\mu\)</span> and the 2nd argument is an output range.</p>
 <h2 id="rulesrs">rules.rs</h2>
 <p>You can define a rule whit:</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Rule</span><span class="w"> </span><span class="p">{</span>
@@ -891,6 +879,8 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="p">}</span>
 </code></pre></div>
 <p>there are two ways to add new rules <code>add_or</code> and <code>add_and</code>. The relations vec is defined as in a rule how the inputs interact with each other.</p>
+<p>You can change the weight to a value between [0.0 1.0].</p>
+<p>You can complement(i.e. <code>is not</code>) a membership function or a range by adding a <code>-</code> sign in front of it.</p>
 <h2 id="aggregationrs">aggregation.rs</h2>
 <p>Aggregation is the how to compute the overall membership of the output. Basically each rule will produce a range and how to convert them to a single membership range is the overall shape will looks.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">Aggregations</span><span class="w"> </span><span class="p">{</span>
@@ -909,6 +899,10 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="p">}</span>
 </code></pre></div>
 <p>It is used as before.</p>
+<div class="admonition danger">
+<p class="admonition-title">More defuzzification methods</p>
+<p>More defuzzification method will be added in the future like <code>CenterOfMeans</code> or <code>MeanOfMax</code>.</p>
+</div>
 <h2 id="variablesrs">variables.rs</h2>
 <h3 id="inputvariable">InputVariable</h3>
 <p>To define a input variable you have to use this struct.</p>
@@ -965,11 +959,6 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="p">}</span>
 </code></pre></div>
 <p>Each of these variants have a dedicated struct that you can make using <code>::new()</code> .</p>
-<h3 id="membership-functions">Membership functions</h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This will be updated in the future. please look at examples for a quick info.</p>
-</div>
 <h2 id="membership_rangesrs">membership_ranges.rs</h2>
 <p>Membership ranges are used to define an output.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">MembershipRange</span><span class="w"> </span><span class="p">{</span>
@@ -977,10 +966,8 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="w">    </span><span class="n">mu</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This will be updated in the future. please look at examples for a quick info.</p>
-</div>
+<h2 id="creating-a-membership-function-or-membership-range">Creating a membership function or membership range</h2>
+<p>They have basically the same. You can create a new using the syntax <code>::new_&lt;what_kind&gt;</code> and add appropriate arguments to it. Please follow the function signature or check out the <a href="https://mechaneurons.github.io/fuzzy-logic-rs/examples/speed_control/">example</a> for more information.</p>
 
 
 
