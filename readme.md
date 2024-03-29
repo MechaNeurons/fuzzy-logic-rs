@@ -3,12 +3,11 @@
 In this project I've tried to implement a simple and lightweight implementation of fuzzy logic only using std.
 
 > Please follow for more updates!
-
 > The Mamdani type I is completed, with all regular features. Please refer to [documentation](https://mechaneurons.github.io/fuzzy-logic-rs/docs/doc1/) or for a quick start check out [examples](https://mechaneurons.github.io/fuzzy-logic-rs/examples/speed_control/).
 
 ## Documentation
-You can view a complete documentation at [here.](https://mechaneurons.github.io/fuzzy-logic-rs/)
 
+You can view a complete documentation at [here.](https://mechaneurons.github.io/fuzzy-logic-rs/)
 
 ## Inference Systems
 
