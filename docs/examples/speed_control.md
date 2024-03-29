@@ -166,6 +166,9 @@ fis.add_rule(Rule::new_and(vec![2, 1, 1], 1.0));
 fis.add_rule(Rule::new_and(vec![2, 2, 2], 1.0));
 ```
 
+!!! Note "Weights and Complements"
+    You can change weights and changing the second argument, and you can add `-` sign to complement that variables
+
 ### Output
 
 The problem formulation is done and we can use this to compute the output of the system:
