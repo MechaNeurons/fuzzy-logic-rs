@@ -1,11 +1,9 @@
-use std::usize;
-
 use crate::aggregations::Aggregations;
 use crate::defuzzifications::Defuzzifiers;
-use crate::implications::Implications;
-use crate::rules::{self, Rule};
+use crate::implications::{self, Implications};
+use crate::rules::{self, Rule, TSKRule};
 use crate::s_norms::SNorms;
-use crate::t_norms::TNorms;
+use crate::t_norms::{self, TNorms};
 use crate::variables::{InputVariables, OutputVariables};
 
 #[derive(Debug)]
@@ -203,5 +201,50 @@ impl MamdaniFuzzyInferenceSystem {
         let aggregation_vec = self.aggregation(implication_vec);
         // 4. defuzzification
         self.defuzzification(aggregation_vec)
+    }
+}
+
+#[derive(Debug)]
+pub struct TSKFuzzyInferenceSystem {
+    s_norm: SNorms,
+    t_norm: TNorms,
+    implication: Implications,
+    rules: Vec<TSKRule>,
+    inputs: Vec<InputVariables>,
+}
+
+pub type TSKFIS = TSKFuzzyInferenceSystem;
+
+impl TSKFuzzyInferenceSystem {
+    pub fn new(s_norm: SNorms, t_norm: TNorms, implication: Implications) -> Self {
+        Self {
+            s_norm,
+            t_norm,
+            implication,
+            rules: Vec::new(),
+            inputs: Vec::new(),
+        }
+    }
+
+    pub fn add_input(&mut self, input: InputVariables) {
+        self.inputs.push(input);
+    }
+
+    pub fn add_rule(&mut self, rule: TSKRule) {
+        self.rules.push(rule);
+    }
+
+    pub fn get_s_norm(&self, fuzzified: &[f64]) -> f64 {
+        self.s_norm.s_norm(fuzzified)
+    }
+
+    pub fn get_t_norm(&self, fuzzified: &[f64]) -> f64 {
+        self.t_norm.t_norm(fuzzified)
+    }
+
+    pub fn compute_outputs(&self, input: Vec<f64>) -> Vec<f64> {
+        let output = Vec::new();
+
+        output
     }
 }

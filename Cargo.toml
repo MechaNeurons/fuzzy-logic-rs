@@ -21,3 +21,11 @@ maintenance = { status = "actively-developed" }
 [[example]]
 name="speed-control"
 path="examples/speed_control.rs"
+
+[[example]]
+name="tipper"
+path="examples/tipper.rs"
+
+[[example]]
+name="function-approximation"
+path="examples/function_approximation.rs"
