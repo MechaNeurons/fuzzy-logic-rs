@@ -1,21 +1,16 @@
-use crate::membership_functions::{GetDegree, MembershipFunction};
+use crate::membership_functions::{
+    linear_membership, GetDegree, MembershipFunction, TSKMembershipFunction,
+};
 use crate::membership_ranges::MembershipRange;
-/*
-#[derive(Debug, Clone, PartialEq)]
-#[derive(Debug)]
-enum Memberships {
-    Function(MembershipFunction),
-    Range(MembershipRange),
-}
-*/
+
 #[derive(Debug, Clone)]
-pub struct InputVariables {
+pub struct InputVariable {
     name: String,
     range: (f64, f64),
     mfs: Vec<MembershipFunction>,
 }
 
-impl InputVariables {
+impl InputVariable {
     pub fn new(name: String, range: (f64, f64)) -> Self {
         Self {
             name,
@@ -43,13 +38,13 @@ impl InputVariables {
 }
 
 #[derive(Debug)]
-pub struct OutputVariables {
+pub struct OutputVariable {
     name: String,
     mrs: Vec<MembershipRange>,
     universe: Vec<f64>,
 }
 
-impl OutputVariables {
+impl OutputVariable {
     pub fn new(name: String, range: (f64, f64), n: i32) -> Self {
         let mut universe = Vec::new();
         let (start, stop) = range;
@@ -81,5 +76,44 @@ impl OutputVariables {
 
     pub fn get_universe_by_idx(&self, idx: usize) -> f64 {
         self.universe[idx].clone()
+    }
+}
+
+#[derive(Debug)]
+pub struct TSKOutputVariable {
+    name: String,
+    mfs: Vec<TSKMembershipFunction>,
+}
+
+impl TSKOutputVariable {
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            mfs: Vec::new(),
+        }
+    }
+
+    pub fn add_membership(&mut self, membership: TSKMembershipFunction) {
+        self.mfs.push(membership);
+    }
+
+    pub fn add_constant_membership(&mut self, value: f64) {
+        self.mfs.push(TSKMembershipFunction::Constant(value));
+    }
+
+    pub fn add_linear_membership(&mut self, coefficients: Vec<f64>) {
+        self.mfs.push(TSKMembershipFunction::Linear(coefficients));
+    }
+
+    pub fn get_mu(&self, idx: usize, input_vec: &Vec<f64>) -> f64 {
+        match self.mfs[idx] {
+            TSKMembershipFunction::Constant(c) => c,
+            TSKMembershipFunction::Linear(coeff) => linear_membership(&coeff, input_vec),
+            TSKMembershipFunction::Custom(f) => f(input_vec),
+        }
+    }
+
+    pub fn get_name(&self) -> &String {
+        &self.name
     }
 }

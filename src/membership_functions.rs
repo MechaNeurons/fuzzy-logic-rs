@@ -30,9 +30,9 @@ impl GetDegree for Kind {
             Self::StepDown(mf) => mf.get_degree(x),
             Self::Gaussian(mf) => mf.get_degree(x),
             Self::Custom(mf) => mf.get_degree(x),
-            Self::Bell(mf)=>mf.get_degree(x),
-            Self::DoubleGaussian(mf)=>mf.get_degree(x),
-            _ => 0.0
+            Self::Bell(mf) => mf.get_degree(x),
+            Self::DoubleGaussian(mf) => mf.get_degree(x),
+            _ => 0.0,
         }
     }
 }
@@ -315,4 +315,19 @@ impl GetDegree for Bell {
     fn get_degree(&self, x: f64) -> f64 {
         1.0 / (1.0 + f64::powf(f64::abs((x - self.center) / self.width), 2.0 * self.shape))
     }
+}
+
+#[derive(Debug)]
+pub enum TSKMembershipFunction {
+    Constant(f64),
+    Linear(Vec<f64>),
+    Custom(fn(&Vec<f64>) -> f64),
+}
+
+pub fn linear_membership(coefficients: &Vec<f64>, input_vec: &Vec<f64>) -> f64 {
+    coefficients
+        .iter()
+        .zip(input_vec.iter())
+        .map(|(c, x)| c * x)
+        .sum()
 }
