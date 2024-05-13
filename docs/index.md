@@ -20,8 +20,12 @@ This is the documentation for fuzzy logic crate.
         membership_ranges.rs
         rules.rs
         s_norms.rs
-        t_torms.rs
+        t_norms.rs
         variables.rs
+    examples/
+        function_approximation.rs
+        speed_control.rs
+        tipper.rs
     Cargo.toml
     .gitignore
     readme.md
@@ -30,9 +34,9 @@ This is the documentation for fuzzy logic crate.
 
 ## Inference Systems
 
-* [*] Mamdani Type 1
+* [x] Mamdani Type 1
 * [ ] Mamdani Type 2
-* [ ] TSK Type 1
+* [x] TSK Type 1
 * [ ] TSK Type 2
 
 ## Future Plans

@@ -62,6 +62,8 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
   # - toc:
   #   permalink: false
 
@@ -92,5 +94,9 @@ extra:
 nav:
   - Home: index.md
   - Documentation: docs/doc1.md
-  - Examples:
-      - "Speed Control" : examples/speed_control.md
+  - Examples: 
+    - "Overview" : examples.md
+    - "List":
+        - "tipping" : examples/tipper.md
+        - "Speed Control": examples/speed_control.md
+        - "Function Approximation": examples/function_approximation.md

@@ -7,16 +7,16 @@
 This is Mamdani Inference system
 
 ```rust
-  pub struct MamdaniFuzzyInferenceSystem {
-    s_norm: SNorms,
-    t_norm: TNorms,
-    implication: Implications,
-    aggregation: Aggregations,
-    defuzzifier: Defuzzifiers,
-    rules: Vec<Rule>,
-    inputs: Vec<InputVariables>,
-    outputs: Vec<OutputVariables>,
-  }
+pub struct MamdaniFuzzyInferenceSystem {
+s_norm: SNorms,
+t_norm: TNorms,
+implication: Implications,
+aggregation: Aggregations,
+defuzzifier: Defuzzifiers,
+rules: Vec<Rule>,
+inputs: Vec<InputVariable>,
+outputs: Vec<OutputVariable>,
+}
 ```
 
 You can create a this system using `::new` method witch is defined as
@@ -36,13 +36,13 @@ Each of these fields are documented separately.
 To add an input you must use `add_input` method. It needs an `InputVariables`.
 
 ```rust
-pub fn add_input(&mut self, input: InputVariables)
+pub fn add_input(&mut self, input: InputVariable)
 ```
 
 The same is true for output but it needs an `OutputVariables`.
 
 ```rust
-pub fn add_output(&mut self, output: OutputVariables)
+pub fn add_output(&mut self, output: OutputVariable)
 ```
 
 To add fuzzy rules you can use `add_rule` which accepts a `Rule` struct as an input
@@ -55,6 +55,59 @@ After defining the instance, inputs, outputs, and rules, you can use compute the
 
 !!!note
     please note that the inputs must be in the order of when you use `add_input` method, and outputs will be in the same order as you add them.
+
+```rust
+pub fn compute_outputs(&self, input_vec: Vec<f64>) -> Vec<f64>
+```
+
+### TSKFIS
+
+This is TSK Inference system.
+
+```rust
+pub struct TSKFuzzyInferenceSystem {
+    s_norm: SNorms,
+    t_norm: TNorms,
+    defuzzification: TSKDefuzzifiers,
+    rules: Vec<Rule>,
+    inputs: Vec<InputVariable>,
+    outputs: Vec<TSKOutputVariable>,
+}
+
+pub type TSKFIS = TSKFuzzyInferenceSystem;
+```
+
+You can create a this system using `::new` method witch is defined as:
+
+```rust
+pub fn new(
+    s_norm: SNorms, 
+    t_norm: TNorms, 
+    defuzzification: TSKDefuzzifiers
+    ) -> Self 
+```
+
+Each of these fields are documented separately.
+
+To add an input you must use `add_input` method. It needs an `InputVariables`.
+
+```rust
+pub fn add_input(&mut self, input: InputVariable)
+```
+
+The same is true for output but it needs an `TSKOutputVariables`.
+
+```rust
+pub fn add_output(&mut self, output: TSKOutputVariable)
+```
+
+To add fuzzy rules you can use `add_rule` which accepts a `Rule` struct as an input
+
+```rust
+pub fn add_rule(&mut self, rule: Rule)
+```
+
+After defining the instance, inputs, outputs, and rules, you can use compute the system output using the `compute_output` which excepts a `vec<f64>` of input variables and outputs a `vec<f64>` containing output variables.
 
 ```rust
 pub fn compute_outputs(&self, input_vec: Vec<f64>) -> Vec<f64>
@@ -161,6 +214,15 @@ It is used as before.
 !!!danger "More defuzzification methods"
     More defuzzification method will be added in the future like `CenterOfMeans` or `MeanOfMax`.
 
+For TSK systems there are other defuzzification method so we have to use another enum.
+
+```rust
+pub enum TSKDefuzzifiers {
+    Mean,
+    Custom(fn(&Vec<f64>, &Vec<f64>) -> f64),
+}
+```
+
 ## variables.rs
 
 ### InputVariable
@@ -168,7 +230,7 @@ It is used as before.
 To define a input variable you have to use this struct.
 
 ```rust
-pub struct InputVariables {
+pub struct InputVariable {
     name: String,
     range: (f64, f64),
     mfs: Vec<MembershipFunction>,
@@ -200,7 +262,7 @@ pub fn fuzzify(&self, idx: usize, x: f64) -> f64
 To define an output variable you need to use this struct. It has a vec of membership range and a universe. The `universe` it the range in which the output is defined and `mrs` are the ranges of different memberships. Please note that any value outside of `universe` is not defined.
 
 ```rust
-pub struct OutputVariables {
+pub struct OutputVariable {
     name: String,
     mrs: Vec<MembershipRange>,
     universe: Vec<f64>,
@@ -211,6 +273,39 @@ You can create a new `OutputVariable` using `::new()` which need a range where t
 
 ```rust
 pub fn new(name: String, range: (f64, f64), n: i32) -> Self
+```
+
+### TSKOutputVariable
+
+This struct is used for creating a TSK output variable. 
+
+```rust
+pub struct TSKOutputVariable {
+    name: String,
+    mfs: Vec<TSKMembershipFunction>,
+}
+```
+
+By using `::new()` you can create a new instance.
+
+```rust
+pub fn new(name: String) -> Self 
+```
+
+You can add `constant` , `linear` or custom membership function by calling `add` methods.
+
+```rust
+pub fn add_membership(&mut self, membership: TSKMembershipFunction) {
+    self.mfs.push(membership);
+}
+
+pub fn add_constant_membership(&mut self, value: f64) {
+    self.mfs.push(TSKMembershipFunction::Constant(value));
+}
+
+pub fn add_linear_membership(&mut self, coefficients: Vec<f64>) {
+    self.mfs.push(TSKMembershipFunction::Linear(coefficients));
+}
 ```
 
 ## membership_functions.rs
@@ -242,7 +337,17 @@ pub enum Kind {
 }
 ```
 
-Each of these variants have a dedicated struct that you can make using `::new()` .
+Each of these variants have a dedicated struct that you can make using `::new()`.
+
+For TSK systems you have to use this enum.
+
+```rust
+pub enum TSKMembershipFunction {
+    Constant(f64),
+    Linear(Vec<f64>),
+    Custom(fn(&Vec<f64>) -> f64),
+}
+```
 
 ## membership_ranges.rs
 

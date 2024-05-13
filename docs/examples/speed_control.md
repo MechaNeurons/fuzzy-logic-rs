@@ -29,7 +29,7 @@ use fuzzy_logic_rs::{
     rules::Rule,
     s_norms::SNorms,
     t_norms::TNorms,
-    variables::{InputVariables, OutputVariables},
+    variables::{InputVariable, OutputVariable},
 };
 ```
 
@@ -53,14 +53,14 @@ As the problem stated we have to input that we can use in our calculation, speed
 I'll assume the speed will vary in the range of [0 140] and distance in the range of [0 50].
 
 !!!danger "Input range"
-    please do not use the values outside of these ranges, in the current setup. change the membership that are also defined outside of this range like `LinearZ` and `LinearS` or a custom one.
+    please do not use the values outside of these ranges, in the current setup. change to the membership that are also defined outside of this range like `LinearZ` and `LinearS` or a custom one.
 
 I choose 3 triangular membership functions for each input.
 
 speed: S - M - L
 
 ```rust
-let mut v1 = InputVariables::new("speed".to_string(), (0.0, 140.0));
+let mut v1 = InputVariable::new("speed".to_string(), (0.0, 140.0));
 v1.add_membership(MF::new(
     "S".to_string(),
     MFKind::Triangle(Triangle::new(-58.3, 0.0, 58.3)),
@@ -79,7 +79,7 @@ fis.add_input(v1);
 distance: S - M - L
 
 ```rust
-let mut v2 = InputVariables::new("Distance".to_string(), (0.0, 50.0));
+let mut v2 = InputVariable::new("Distance".to_string(), (0.0, 50.0));
 v2.add_membership(MF::new(
     "S".to_string(),
     MFKind::Triangle(Triangle::new(-20.83, 0.0, 20.83)),
@@ -102,7 +102,7 @@ We have to control the acceleration so I will assume the accusation will change 
 acceleration: NB(negative big) - NS(negative small) - ZR(zero) - PS(positive small) - PB(positive big)
 
 ```rust
-let mut o1 = OutputVariables::new(String::from("Acceleration"), (-1.0, 1.0), 100);
+let mut o1 = OutputVariable::new(String::from("Acceleration"), (-1.0, 1.0), 100);
 o1.add_membership(MembershipRange::new_gaussian(
     o1.get_universe(),
     "NB".to_string(),
