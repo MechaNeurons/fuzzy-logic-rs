@@ -18,7 +18,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../../examples/speed_control/">
+        <link rel="next" href="../../examples/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -264,7 +264,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../examples/speed_control/" class="md-tabs__link">
+        <a href="../../examples/" class="md-tabs__link">
           
   
     
@@ -413,6 +413,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tskfis" class="md-nav__link">
+    <span class="md-ellipsis">
+      TSKFIS
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -500,6 +509,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tskoutputvariable" class="md-nav__link">
+    <span class="md-ellipsis">
+      TSKOutputVariable
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -551,6 +569,8 @@
       
         
       
+        
+      
     
     
       
@@ -591,6 +611,96 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    List
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            List
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/tipper/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    tipping
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/speed_control/" class="md-nav__link">
         
   
@@ -600,6 +710,35 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/function_approximation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Function Approximation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -657,6 +796,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tskfis" class="md-nav__link">
+    <span class="md-ellipsis">
+      TSKFIS
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -739,6 +887,15 @@
   <a href="#outputvariable" class="md-nav__link">
     <span class="md-ellipsis">
       OutputVariable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tskoutputvariable" class="md-nav__link">
+    <span class="md-ellipsis">
+      TSKOutputVariable
     </span>
   </a>
   
@@ -798,16 +955,16 @@
 <h2 id="fuzzy_inference_systemsrs">fuzzy_inference_systems.rs</h2>
 <h3 id="mamdanifis">MamdaniFIS</h3>
 <p>This is Mamdani Inference system</p>
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">MamdaniFuzzyInferenceSystem</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">s_norm</span>: <span class="nc">SNorms</span><span class="p">,</span>
-<span class="w">    </span><span class="n">t_norm</span>: <span class="nc">TNorms</span><span class="p">,</span>
-<span class="w">    </span><span class="n">implication</span>: <span class="nc">Implications</span><span class="p">,</span>
-<span class="w">    </span><span class="n">aggregation</span>: <span class="nc">Aggregations</span><span class="p">,</span>
-<span class="w">    </span><span class="n">defuzzifier</span>: <span class="nc">Defuzzifiers</span><span class="p">,</span>
-<span class="w">    </span><span class="n">rules</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Rule</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">inputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">InputVariables</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">outputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">OutputVariables</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">MamdaniFuzzyInferenceSystem</span><span class="w"> </span><span class="p">{</span>
+<span class="n">s_norm</span>: <span class="nc">SNorms</span><span class="p">,</span>
+<span class="n">t_norm</span>: <span class="nc">TNorms</span><span class="p">,</span>
+<span class="n">implication</span>: <span class="nc">Implications</span><span class="p">,</span>
+<span class="n">aggregation</span>: <span class="nc">Aggregations</span><span class="p">,</span>
+<span class="n">defuzzifier</span>: <span class="nc">Defuzzifiers</span><span class="p">,</span>
+<span class="n">rules</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Rule</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="n">inputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">InputVariable</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="n">outputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">OutputVariable</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>You can create a this system using <code>::new</code> method witch is defined as</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span>
@@ -820,10 +977,10 @@
 </code></pre></div>
 <p>Each of these fields are documented separately.</p>
 <p>To add an input you must use <code>add_input</code> method. It needs an <code>InputVariables</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_input</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">input</span>: <span class="nc">InputVariables</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_input</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">input</span>: <span class="nc">InputVariable</span><span class="p">)</span>
 </code></pre></div>
 <p>The same is true for output but it needs an <code>OutputVariables</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_output</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">output</span>: <span class="nc">OutputVariables</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_output</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">output</span>: <span class="nc">OutputVariable</span><span class="p">)</span>
 </code></pre></div>
 <p>To add fuzzy rules you can use <code>add_rule</code> which accepts a <code>Rule</code> struct as an input</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_rule</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">rule</span>: <span class="nc">Rule</span><span class="p">)</span>
@@ -833,6 +990,39 @@
 <p class="admonition-title">Note</p>
 <p>please note that the inputs must be in the order of when you use <code>add_input</code> method, and outputs will be in the same order as you add them.</p>
 </div>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_outputs</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">input_vec</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span>
+</code></pre></div>
+<h3 id="tskfis">TSKFIS</h3>
+<p>This is TSK Inference system.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">TSKFuzzyInferenceSystem</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">s_norm</span>: <span class="nc">SNorms</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_norm</span>: <span class="nc">TNorms</span><span class="p">,</span>
+<span class="w">    </span><span class="n">defuzzification</span>: <span class="nc">TSKDefuzzifiers</span><span class="p">,</span>
+<span class="w">    </span><span class="n">rules</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Rule</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">inputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">InputVariable</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">outputs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">TSKOutputVariable</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">pub</span><span class="w"> </span><span class="k">type</span> <span class="nc">TSKFIS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TSKFuzzyInferenceSystem</span><span class="p">;</span>
+</code></pre></div>
+<p>You can create a this system using <code>::new</code> method witch is defined as:</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span>
+<span class="w">    </span><span class="n">s_norm</span>: <span class="nc">SNorms</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">t_norm</span>: <span class="nc">TNorms</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">defuzzification</span>: <span class="nc">TSKDefuzzifiers</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span>
+</code></pre></div>
+<p>Each of these fields are documented separately.</p>
+<p>To add an input you must use <code>add_input</code> method. It needs an <code>InputVariables</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_input</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">input</span>: <span class="nc">InputVariable</span><span class="p">)</span>
+</code></pre></div>
+<p>The same is true for output but it needs an <code>TSKOutputVariables</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_output</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">output</span>: <span class="nc">TSKOutputVariable</span><span class="p">)</span>
+</code></pre></div>
+<p>To add fuzzy rules you can use <code>add_rule</code> which accepts a <code>Rule</code> struct as an input</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_rule</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">rule</span>: <span class="nc">Rule</span><span class="p">)</span>
+</code></pre></div>
+<p>After defining the instance, inputs, outputs, and rules, you can use compute the system output using the <code>compute_output</code> which excepts a <code>vec&lt;f64&gt;</code> of input variables and outputs a <code>vec&lt;f64&gt;</code> containing output variables.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_outputs</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">input_vec</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span>
 </code></pre></div>
 <h2 id="s_normsrs">s_norms.rs</h2>
@@ -903,10 +1093,16 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <p class="admonition-title">More defuzzification methods</p>
 <p>More defuzzification method will be added in the future like <code>CenterOfMeans</code> or <code>MeanOfMax</code>.</p>
 </div>
+<p>For TSK systems there are other defuzzification method so we have to use another enum.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">TSKDefuzzifiers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Mean</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="o">&amp;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">f64</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="variablesrs">variables.rs</h2>
 <h3 id="inputvariable">InputVariable</h3>
 <p>To define a input variable you have to use this struct.</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">InputVariables</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">InputVariable</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">range</span>: <span class="p">(</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="kt">f64</span><span class="p">),</span>
 <span class="w">    </span><span class="n">mfs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">MembershipFunction</span><span class="o">&gt;</span><span class="p">,</span>
@@ -927,7 +1123,7 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 </code></pre></div>
 <h3 id="outputvariable">OutputVariable</h3>
 <p>To define an output variable you need to use this struct. It has a vec of membership range and a universe. The <code>universe</code> it the range in which the output is defined and <code>mrs</code> are the ranges of different memberships. Please note that any value outside of <code>universe</code> is not defined.</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">OutputVariables</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">OutputVariable</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">mrs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">MembershipRange</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="w">    </span><span class="n">universe</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">,</span>
@@ -935,6 +1131,29 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 </code></pre></div>
 <p>You can create a new <code>OutputVariable</code> using <code>::new()</code> which need a range where the universe is defined and, and how many number of points you want tou be in the range whit <code>n</code> argument.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">range</span>: <span class="p">(</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="kt">f64</span><span class="p">),</span><span class="w"> </span><span class="n">n</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span>
+</code></pre></div>
+<h3 id="tskoutputvariable">TSKOutputVariable</h3>
+<p>This struct is used for creating a TSK output variable. </p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">TSKOutputVariable</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mfs</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">TSKMembershipFunction</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>By using <code>::new()</code> you can create a new instance.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">name</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span>
+</code></pre></div>
+<p>You can add <code>constant</code> , <code>linear</code> or custom membership function by calling <code>add</code> methods.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_membership</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">membership</span>: <span class="nc">TSKMembershipFunction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">mfs</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">membership</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_constant_membership</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">value</span>: <span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">mfs</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">TSKMembershipFunction</span>::<span class="n">Constant</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">add_linear_membership</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">coefficients</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">mfs</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">TSKMembershipFunction</span>::<span class="n">Linear</span><span class="p">(</span><span class="n">coefficients</span><span class="p">));</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="membership_functionsrs">membership_functions.rs</h2>
 <p>This file will defined the membership functions that is used in input variable. Several defaults are defined but you can also define your own.</p>
@@ -958,7 +1177,14 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
 <span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="n">Custom</span><span class="p">),</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Each of these variants have a dedicated struct that you can make using <code>::new()</code> .</p>
+<p>Each of these variants have a dedicated struct that you can make using <code>::new()</code>.</p>
+<p>For TSK systems you have to use this enum.</p>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">TSKMembershipFunction</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Constant</span><span class="p">(</span><span class="kt">f64</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Linear</span><span class="p">(</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Custom</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="o">&amp;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">f64</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="membership_rangesrs">membership_ranges.rs</h2>
 <p>Membership ranges are used to define an output.</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">MembershipRange</span><span class="w"> </span><span class="p">{</span>
@@ -1020,13 +1246,13 @@ IF \ x_1 \ IS \ \mu_1 \ AND \ x_2 \ IS \mu_2 \ THEN \ output \ IS \ \mu_o
         
         
           
-          <a href="../../examples/speed_control/" class="md-footer__link md-footer__link--next" aria-label="Next: Speed Control">
+          <a href="../../examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Speed Control
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">
