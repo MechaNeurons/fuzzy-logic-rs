@@ -1,11 +1,9 @@
-use core::f64;
-
 use crate::aggregations::Aggregations;
 use crate::defuzzifications::Defuzzifiers;
-use crate::implications::{self, Implications};
-use crate::rules::{self, Rule, TSKRule};
+use crate::implications::Implications;
+use crate::rules::{self, Rule};
 use crate::s_norms::SNorms;
-use crate::t_norms::{self, TNorms};
+use crate::t_norms::TNorms;
 use crate::variables::{InputVariable, OutputVariable};
 
 #[derive(Debug)]
@@ -207,6 +205,7 @@ impl MamdaniFuzzyInferenceSystem {
 }
 
 #[derive(Debug)]
+#[allow(unused)]
 pub struct TSKFuzzyInferenceSystem {
     s_norm: SNorms,
     t_norm: TNorms,

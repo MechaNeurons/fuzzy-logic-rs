@@ -8,11 +8,11 @@ use fuzzy_logic_rs::{
     rules::Rule,
     s_norms::SNorms,
     t_norms::TNorms,
-    variables::{InputVariables, OutputVariables},
+    variables::{InputVariable, OutputVariable},
 };
 
 fn main() {
-    let mut v1 = InputVariables::new("speed".to_string(), (0.0, 140.0));
+    let mut v1 = InputVariable::new("speed".to_string(), (0.0, 140.0));
     v1.add_membership(MF::new(
         "S".to_string(),
         MFKind::Triangle(Triangle::new(-58.3, 0.0, 58.3)),
@@ -26,7 +26,7 @@ fn main() {
         MFKind::Triangle(Triangle::new(81.67, 140.0, 198.3)),
     ));
 
-    let mut v2 = InputVariables::new("Distance".to_string(), (0.0, 50.0));
+    let mut v2 = InputVariable::new("Distance".to_string(), (0.0, 50.0));
     v2.add_membership(MF::new(
         "S".to_string(),
         MFKind::Triangle(Triangle::new(-20.83, 0.0, 20.83)),
@@ -40,7 +40,7 @@ fn main() {
         MFKind::Triangle(Triangle::new(29.17, 50.0, 70.82)),
     ));
 
-    let mut o1 = OutputVariables::new(String::from("Acceleration"), (-1.0, 1.0), 100);
+    let mut o1 = OutputVariable::new(String::from("Acceleration"), (-1.0, 1.0), 100);
     o1.add_membership(MembershipRange::new_gaussian(
         o1.get_universe(),
         "NB".to_string(),

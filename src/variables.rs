@@ -106,8 +106,8 @@ impl TSKOutputVariable {
     }
 
     pub fn get_mu(&self, idx: usize, input_vec: &Vec<f64>) -> f64 {
-        match self.mfs[idx] {
-            TSKMembershipFunction::Constant(c) => c,
+        match &self.mfs[idx] {
+            TSKMembershipFunction::Constant(c) => *c,
             TSKMembershipFunction::Linear(coeff) => linear_membership(&coeff, input_vec),
             TSKMembershipFunction::Custom(f) => f(input_vec),
         }
