@@ -13,7 +13,7 @@ You can view a complete documentation at [here.](https://mechaneurons.github.io/
 
 * [x] Mamdani Type 1
 * [ ] Mamdani Type 2
-* [ ] TSK Type 1
+* [x] TSK Type 1
 * [ ] TSK Type 2
 
 ## Future Plans
