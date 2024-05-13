@@ -1,5 +1,5 @@
 use crate::aggregations::Aggregations;
-use crate::defuzzifications::{self, Defuzzifiers, TSKDefuzzifiers};
+use crate::defuzzifications::{Defuzzifiers, TSKDefuzzifiers};
 use crate::implications::Implications;
 use crate::rules::{self, Rule};
 use crate::s_norms::SNorms;
@@ -205,12 +205,10 @@ impl MamdaniFuzzyInferenceSystem {
 }
 
 #[derive(Debug)]
-#[allow(unused)]
 pub struct TSKFuzzyInferenceSystem {
     s_norm: SNorms,
     t_norm: TNorms,
-    implication: Implications,
-    defuzzification:TSKDefuzzifiers,
+    defuzzification: TSKDefuzzifiers,
     rules: Vec<Rule>,
     inputs: Vec<InputVariable>,
     outputs: Vec<TSKOutputVariable>,
@@ -219,11 +217,10 @@ pub struct TSKFuzzyInferenceSystem {
 pub type TSKFIS = TSKFuzzyInferenceSystem;
 
 impl TSKFuzzyInferenceSystem {
-    pub fn new(s_norm: SNorms, t_norm: TNorms, implication: Implications,defuzzification:TSKDefuzzifiers) -> Self {
+    pub fn new(s_norm: SNorms, t_norm: TNorms, defuzzification: TSKDefuzzifiers) -> Self {
         Self {
             s_norm,
             t_norm,
-            implication,
             defuzzification,
             rules: Vec::new(),
             inputs: Vec::new(),
@@ -308,19 +305,7 @@ impl TSKFuzzyInferenceSystem {
             .map(|(mu, rule)| rule.get_weight() * mu)
             .collect()
     }
-    // #[allow(unused)]
-    // pub fn implication(&self, connected_inputs: Vec<f64>) -> Vec<f64> {
-    //     let mut implication_vec = Vec::new();
-    //     for i in 0..self.outputs.len() {
-    //         let tt = 1.0;
-    //         for ii in 0..self.rules.len() {
-    //             let t = 1.0;
-    //         }
-    //     }
-    //     implication_vec
-    // }
 
-    #[allow(unused)]
     pub fn get_mu(&self, input_vec: &Vec<f64>) -> Vec<Vec<f64>> {
         let mut output = Vec::new();
         for i in 0..self.outputs.len() {
@@ -336,10 +321,6 @@ impl TSKFuzzyInferenceSystem {
         output
     }
 
-    #[allow(unused)]
-    pub fn defuzzification(&self, weighted_inputs: Vec<f64>) {}
-
-    #[allow(unused)]
     pub fn compute_outputs(&self, input: Vec<f64>) -> Vec<f64> {
         let mut output = Vec::new();
 
@@ -351,7 +332,7 @@ impl TSKFuzzyInferenceSystem {
 
         // 2 - implication
         let mu_vec = self.get_mu(&input);
-        for i in 0..self.outputs.len(){
+        for i in 0..self.outputs.len() {
             output.push(self.defuzzification.defuzzify(&mu_vec[i], &weighted_input));
         }
 

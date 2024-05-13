@@ -11,7 +11,7 @@ repo_url: https://github.com/MechaNeurons/fuzzy-logic-rs.git
 
 theme:
   name: material
-  custom_dir: docs/overrides
+  # custom_dir: docs/overrides
   icon: material/robot
   language: en
   features:

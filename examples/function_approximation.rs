@@ -1,8 +1,13 @@
 use fuzzy_logic_rs::{
-    defuzzifications::TSKDefuzzifiers, fuzzy_inference_systems::TSKFIS, implications::Implications, membership_functions::{Gaussian, MFKind, MembershipFunction}, rules::Rule, s_norms::SNorms, t_norms::TNorms, variables::{InputVariable, TSKOutputVariable}
+    defuzzifications::TSKDefuzzifiers,
+    fuzzy_inference_systems::TSKFIS,
+    membership_functions::{Gaussian, MFKind, MembershipFunction},
+    rules::Rule,
+    s_norms::SNorms,
+    t_norms::TNorms,
+    variables::{InputVariable, TSKOutputVariable},
 };
 
-#[allow(unused)]
 fn main() {
     let x1 = 0.0;
     let x2 = 0.25;
@@ -14,28 +19,28 @@ fn main() {
     let y24 = original_function(x2);
     let y3 = original_function(x3);
 
-    let mut fis = TSKFIS::new(SNorms::Max, TNorms::Min, Implications::Product,TSKDefuzzifiers::Mean);
+    let mut fis = TSKFIS::new(SNorms::Max, TNorms::Min, TSKDefuzzifiers::Mean);
 
     let mut x: InputVariable = InputVariable::new("X".to_string(), (0.0, 1.0));
     x.add_membership(MembershipFunction::new(
         "x1".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.0, 0.09)),
+        MFKind::Gaussian(Gaussian::new(x1, 0.09)),
     ));
     x.add_membership(MembershipFunction::new(
         "x2".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.25, 0.09)),
+        MFKind::Gaussian(Gaussian::new(x2, 0.09)),
     ));
     x.add_membership(MembershipFunction::new(
         "x3".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.5, 0.09)),
+        MFKind::Gaussian(Gaussian::new(x3, 0.09)),
     ));
     x.add_membership(MembershipFunction::new(
         "x4".to_string(),
-        MFKind::Gaussian(Gaussian::new(0.75, 0.09)),
+        MFKind::Gaussian(Gaussian::new(x4, 0.09)),
     ));
     x.add_membership(MembershipFunction::new(
         "x5".to_string(),
-        MFKind::Gaussian(Gaussian::new(1.0, 0.09)),
+        MFKind::Gaussian(Gaussian::new(x5, 0.09)),
     ));
     fis.add_input(x);
 
