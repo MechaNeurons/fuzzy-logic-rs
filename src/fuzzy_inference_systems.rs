@@ -1,10 +1,10 @@
 use crate::aggregations::Aggregations;
-use crate::defuzzifications::Defuzzifiers;
+use crate::defuzzifications::{self, Defuzzifiers, TSKDefuzzifiers};
 use crate::implications::Implications;
 use crate::rules::{self, Rule};
 use crate::s_norms::SNorms;
 use crate::t_norms::TNorms;
-use crate::variables::{InputVariable, OutputVariable};
+use crate::variables::{InputVariable, OutputVariable, TSKOutputVariable};
 
 #[derive(Debug)]
 pub struct MamdaniFuzzyInferenceSystem {
@@ -97,7 +97,7 @@ impl MamdaniFuzzyInferenceSystem {
     pub fn fuzzification(&self, input_vec: Vec<f64>) -> Vec<Vec<f64>> {
         let mut fuzzified: Vec<Vec<f64>> = Vec::new();
         for i in 0..self.rules.len() {
-            let input_rule = self.get_input_rules(i);
+            let input_rule: &[i32] = self.get_input_rules(i);
             let mut temp_vec: Vec<f64> = Vec::new();
             for ii in 0..self.inputs.len() {
                 let index;
@@ -109,7 +109,7 @@ impl MamdaniFuzzyInferenceSystem {
                     index = input_rule[ii] as usize;
                     complement = false;
                 }
-                let fuzzed = self.inputs[ii].fuzzify(index, input_vec[ii]);
+                let fuzzed: f64 = self.inputs[ii].fuzzify(index, input_vec[ii]);
                 temp_vec.push(match complement {
                     true => 1.0 - fuzzed,
                     false => fuzzed,
@@ -210,19 +210,21 @@ pub struct TSKFuzzyInferenceSystem {
     s_norm: SNorms,
     t_norm: TNorms,
     implication: Implications,
+    defuzzification:TSKDefuzzifiers,
     rules: Vec<Rule>,
     inputs: Vec<InputVariable>,
-    outputs: Vec<f64>,
+    outputs: Vec<TSKOutputVariable>,
 }
 
 pub type TSKFIS = TSKFuzzyInferenceSystem;
 
 impl TSKFuzzyInferenceSystem {
-    pub fn new(s_norm: SNorms, t_norm: TNorms, implication: Implications) -> Self {
+    pub fn new(s_norm: SNorms, t_norm: TNorms, implication: Implications,defuzzification:TSKDefuzzifiers) -> Self {
         Self {
             s_norm,
             t_norm,
             implication,
+            defuzzification,
             rules: Vec::new(),
             inputs: Vec::new(),
             outputs: Vec::new(),
@@ -233,7 +235,9 @@ impl TSKFuzzyInferenceSystem {
         self.inputs.push(input);
     }
 
-    pub fn add_output(&mut self) {}
+    pub fn add_output(&mut self, variable: TSKOutputVariable) {
+        self.outputs.push(variable);
+    }
 
     pub fn add_rule(&mut self, rule: Rule) {
         self.rules.push(rule);
@@ -304,27 +308,52 @@ impl TSKFuzzyInferenceSystem {
             .map(|(mu, rule)| rule.get_weight() * mu)
             .collect()
     }
+    // #[allow(unused)]
+    // pub fn implication(&self, connected_inputs: Vec<f64>) -> Vec<f64> {
+    //     let mut implication_vec = Vec::new();
+    //     for i in 0..self.outputs.len() {
+    //         let tt = 1.0;
+    //         for ii in 0..self.rules.len() {
+    //             let t = 1.0;
+    //         }
+    //     }
+    //     implication_vec
+    // }
+
     #[allow(unused)]
-    pub fn implication(&self, connected_inputs: Vec<f64>) -> Vec<f64> {
-        let mut implication_vec = Vec::new();
+    pub fn get_mu(&self, input_vec: &Vec<f64>) -> Vec<Vec<f64>> {
+        let mut output = Vec::new();
         for i in 0..self.outputs.len() {
-            let tt = 1.0;
+            let mut temp_vec = Vec::new();
             for ii in 0..self.rules.len() {
-                let t = 1.0;
+                let output_rule = self.rules[ii].get_output_rules(self.inputs.len());
+                temp_vec.push(
+                    self.outputs[i].get_mu(output_rule[i as usize].try_into().unwrap(), &input_vec),
+                )
             }
+            output.push(temp_vec);
         }
-        implication_vec
+        output
     }
 
+    #[allow(unused)]
+    pub fn defuzzification(&self, weighted_inputs: Vec<f64>) {}
+
+    #[allow(unused)]
     pub fn compute_outputs(&self, input: Vec<f64>) -> Vec<f64> {
-        let output = Vec::new();
+        let mut output = Vec::new();
 
         // 1 - fuzzification
-        let fuzzified = self.fuzzification(input);
+        let fuzzified = self.fuzzification(input.clone());
         let connected_inputs = self.connect_inputs(fuzzified);
-        let weighted_inputs = self.weighed_inputs(connected_inputs);
+        let weighted_input = self.weighed_inputs(connected_inputs);
+        // weighted_inputs
 
         // 2 - implication
+        let mu_vec = self.get_mu(&input);
+        for i in 0..self.outputs.len(){
+            output.push(self.defuzzification.defuzzify(&mu_vec[i], &weighted_input));
+        }
 
         output
     }

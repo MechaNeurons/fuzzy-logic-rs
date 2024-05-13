@@ -109,7 +109,7 @@ impl TSKOutputVariable {
         match &self.mfs[idx] {
             TSKMembershipFunction::Constant(c) => *c,
             TSKMembershipFunction::Linear(coeff) => linear_membership(&coeff, input_vec),
-            TSKMembershipFunction::Custom(f) => f(input_vec),
+            TSKMembershipFunction::Custom(fun) => fun(input_vec),
         }
     }
 
