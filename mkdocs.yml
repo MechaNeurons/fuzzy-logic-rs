@@ -100,3 +100,4 @@ nav:
         - "tipping" : examples/tipper.md
         - "Speed Control": examples/speed_control.md
         - "Function Approximation": examples/function_approximation.md
+  - "Change Log": change_logs.md
